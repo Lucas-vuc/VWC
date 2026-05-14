@@ -392,8 +392,141 @@
       text-align: center; padding: 24px 0 8px;
     }
 
+    /* Expand/collapse toggle */
+    .expand-toggle {
+      position: absolute;
+      bottom: -11px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--cream); color: var(--ink);
+      border: 1px solid var(--gold);
+      border-radius: 999px;
+      padding: 2px 9px 3px;
+      font-size: 9px; letter-spacing: 0.14em;
+      cursor: pointer; z-index: 6;
+      display: inline-flex; align-items: center; gap: 5px;
+      white-space: nowrap; line-height: 1;
+      box-shadow: 0 4px 10px rgba(14,26,20,0.18);
+      transition: all .15s ease;
+      font-weight: 600;
+    }
+    .expand-toggle:hover {
+      background: var(--gold-2); border-color: var(--gold-2);
+    }
+    .expand-toggle .chev { font-size: 11px; line-height: 1; }
+    .node.group .expand-toggle, .node.root .expand-toggle {
+      background: var(--ink); color: var(--gold-2);
+      border-color: var(--gold-2);
+    }
+    .node.group .expand-toggle:hover, .node.root .expand-toggle:hover {
+      background: var(--gold-2); color: var(--ink);
+    }
+
+    /* View-mode toggle button in actions row */
+    .node-btn.view { font-size: 11px; }
+
+    /* Compact roster list (viewMode === 'list' on a group) */
+    .roster {
+      margin: 12px -10px -2px;
+      padding: 8px;
+      background: rgba(0,0,0,0.22);
+      border-radius: 5px;
+      display: flex; flex-direction: column; gap: 3px;
+      text-align: left;
+    }
+    .node:not(.group) .roster {
+      background: rgba(14,26,20,0.06);
+    }
+    .roster-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+      border-radius: 3px;
+      background: rgba(244,237,224,0.04);
+      position: relative;
+      cursor: grab;
+      transition: background .15s ease, box-shadow .15s ease, opacity .15s ease;
+    }
+    .node:not(.group) .roster-row {
+      background: rgba(14,26,20,0.04);
+    }
+    .roster-row:active { cursor: grabbing; }
+    .roster-row:hover { background: rgba(244,237,224,0.10); }
+    .node:not(.group) .roster-row:hover { background: rgba(14,26,20,0.10); }
+    .roster-row.selected {
+      background: rgba(201,166,74,0.22);
+      box-shadow: inset 0 0 0 1px var(--gold);
+    }
+    .roster-row.dragging { opacity: 0.45; }
+    .roster-row.drop-target {
+      box-shadow: inset 0 0 0 2px var(--gold-2);
+      background: rgba(201,166,74,0.16);
+    }
+    .roster-row .row-main {
+      display: flex; flex-direction: column; gap: 1px;
+      min-width: 0;
+    }
+    .roster-row .row-role {
+      font-size: 8px; letter-spacing: 0.24em;
+      text-transform: uppercase; color: var(--gold-2);
+      outline: none; font-weight: 600;
+    }
+    .node:not(.group) .roster-row .row-role { color: var(--gold-deep); }
+    .roster-row .row-name {
+      font-family: var(--serif); font-weight: 600;
+      font-size: 14px; color: var(--cream);
+      outline: none; line-height: 1.15;
+    }
+    .node:not(.group) .roster-row .row-name { color: var(--ink); }
+    .roster-row .row-name[contenteditable="true"]:focus,
+    .roster-row .row-role[contenteditable="true"]:focus {
+      background: rgba(201,166,74,0.22);
+      box-shadow: inset 0 0 0 1px rgba(201,166,74,0.5);
+      border-radius: 2px;
+      padding: 0 3px; margin: 0 -3px;
+    }
+    .roster-row .row-chips {
+      display: flex; gap: 3px;
+    }
+    .roster-row .row-chips .site-chip {
+      font-size: 8px; padding: 1px 5px; letter-spacing: 0.14em;
+    }
+    .roster-del {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(244,237,224,0.55);
+      border: 1px solid transparent;
+      font-size: 14px; line-height: 1;
+      cursor: pointer; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .node:not(.group) .roster-del { color: rgba(14,26,20,0.4); }
+    .roster-del:hover {
+      background: rgba(168,68,59,0.3);
+      border-color: #a8443b;
+      color: var(--cream);
+    }
+    .roster-add {
+      margin-top: 6px;
+      font-size: 9px; letter-spacing: 0.18em;
+      text-transform: uppercase; font-weight: 600;
+      padding: 5px 10px; border-radius: 999px;
+      background: transparent;
+      border: 1px dashed rgba(201,166,74,0.5);
+      color: rgba(244,237,224,0.75);
+      cursor: pointer;
+      align-self: center;
+      transition: all .15s ease;
+    }
+    .node:not(.group) .roster-add { color: var(--gold-deep); border-color: rgba(201,166,74,0.6); }
+    .roster-add:hover { color: var(--cream); border-color: var(--gold-2); background: rgba(201,166,74,0.1); }
+    .node:not(.group) .roster-add:hover { color: var(--ink); background: rgba(201,166,74,0.15); }
+
     @media print {
       .topbar, .tip, .toast { display: none !important; }
+      .expand-toggle { display: none !important; }
       body { background: #fff; }
       .canvas { overflow: visible; padding: 24px; }
       .node:hover .actions, .node:hover .below { opacity: 0 !important; }
@@ -469,7 +602,7 @@
 
     const STORAGE_KEY_TREE  = "vwc_organigram_v3_tree";
     const STORAGE_KEY_SITES = "vwc_organigram_v3_sites";
-    const TIP_KEY = "vwc_organigram_v3_tip";
+    const TIP_KEY = "vwc_organigram_v4_tip";
 
     const uid = () => "n_" + Math.random().toString(36).slice(2, 9);
 
@@ -529,6 +662,24 @@
     function setNodeType(tree, id, type) {
       return mapTree(tree, n => n.id === id ? { ...n, type } : n);
     }
+    function setCollapsed(tree, id, v) {
+      return mapTree(tree, n => n.id === id ? { ...n, collapsed: v } : n);
+    }
+    function setViewMode(tree, id, mode) {
+      return mapTree(tree, n => n.id === id ? { ...n, viewMode: mode } : n);
+    }
+    function setCollapsedAll(tree, v, groupsOnly) {
+      return mapTree(tree, n => {
+        if (n.id === tree.id) return n; // never collapse root
+        if (groupsOnly && n.type !== "group") return n;
+        if (!(n.children && n.children.length)) return n;
+        return { ...n, collapsed: v };
+      });
+    }
+    function getViewMode(n) {
+      if (n.viewMode === "tree" || n.viewMode === "list") return n.viewMode;
+      return n.type === "group" ? "list" : "tree";
+    }
     function reparent(tree, draggedId, newParentId) {
       const node = findNode(tree, draggedId);
       if (!node) return tree;
@@ -573,6 +724,15 @@
     }
 
     /* ---------- Editable text ---------- */
+    function selectAllIn(el) {
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) {}
+    }
     function Editable({ value, onChange, className, placeholder, onClick }) {
       const ref = useRef(null);
       useEffect(() => {
@@ -591,9 +751,31 @@
           onKeyDown={e => {
             if (e.key === "Enter") { e.preventDefault(); e.currentTarget.blur(); }
             if (e.key === "Escape") { e.currentTarget.blur(); }
+            if ((e.metaKey || e.ctrlKey) && (e.key === "a" || e.key === "A")) {
+              e.preventDefault();
+              selectAllIn(e.currentTarget);
+            }
+          }}
+          onMouseDown={e => {
+            e.stopPropagation();
+            // First click: focus + select all so the user can immediately overwrite.
+            // Subsequent clicks (while focused) keep default cursor positioning.
+            if (document.activeElement !== e.currentTarget) {
+              e.preventDefault();
+              e.currentTarget.focus();
+              requestAnimationFrame(() => selectAllIn(e.currentTarget));
+            }
           }}
           onClick={e => { e.stopPropagation(); onClick && onClick(); }}
-          onMouseDown={e => e.stopPropagation()}
+          onFocus={e => {
+            // For focus arriving via Tab key (no preceding mousedown), select all too.
+            requestAnimationFrame(() => {
+              if (document.activeElement === e.target) {
+                const sel = window.getSelection();
+                if (sel && sel.isCollapsed) selectAllIn(e.target);
+              }
+            });
+          }}
           onDragStart={e => { e.preventDefault(); e.stopPropagation(); }}
           data-placeholder={placeholder}
         >
@@ -627,18 +809,79 @@
       );
     }
 
+    /* ---------- Roster row (compact list) ---------- */
+    function RosterRow(props) {
+      const {
+        node, selected, sites,
+        dragId, dropTargetId,
+        onSelect, onChange, onDelete, onToggleSite,
+        onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd
+      } = props;
+      const isDragging = dragId === node.id;
+      const isDropTarget = dropTargetId === node.id;
+      return (
+        <div
+          className={
+            "roster-row" +
+            (selected ? " selected" : "") +
+            (isDragging ? " dragging" : "") +
+            (isDropTarget ? " drop-target" : "")
+          }
+          draggable={true}
+          onClick={e => { e.stopPropagation(); onSelect(node.id); }}
+          onDragStart={e => { e.stopPropagation(); onDragStart(e, node.id); }}
+          onDragEnd={onDragEnd}
+          onDragOver={e => { e.stopPropagation(); onDragOver(e, node.id); }}
+          onDragLeave={e => onDragLeave(e, node.id)}
+          onDrop={e => { e.stopPropagation(); onDrop(e, node.id); }}
+        >
+          <div className="row-main">
+            <Editable
+              className="row-role"
+              value={node.role}
+              onChange={v => onChange(node.id, { role: v })}
+              placeholder="Role"
+              onClick={() => onSelect(node.id)}
+            />
+            <Editable
+              className="row-name"
+              value={node.name}
+              onChange={v => onChange(node.id, { name: v })}
+              placeholder="Name"
+              onClick={() => onSelect(node.id)}
+            />
+          </div>
+          <SiteChips
+            sites={sites}
+            active={node.sites}
+            selected={selected}
+            onToggle={(siteId) => onToggleSite(node.id, siteId)}
+          />
+          <button
+            className="roster-del"
+            title="Remove"
+            onMouseDown={e => e.stopPropagation()}
+            onClick={e => { e.stopPropagation(); onDelete(node.id); }}
+          >×</button>
+        </div>
+      );
+    }
+
     /* ---------- Node ---------- */
     function NodeCard(props) {
       const {
-        node, isRoot, selected, sites,
+        node, isRoot, selected, sites, selectedId,
         dragId, dropTargetId,
+        rosterChildren, collapsed, viewMode,
         onSelect, onChange, onAddChild, onAddSibling, onDelete,
-        onToggleSite, onToggleType,
+        onToggleSite, onToggleType, onToggleCollapsed, onToggleViewMode,
         onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd
       } = props;
       const isGroup = node.type === "group";
       const isDragging = dragId === node.id;
       const isDropTarget = dropTargetId === node.id;
+      const hasChildren = node.children && node.children.length > 0;
+      const showListInside = !!rosterChildren;
       return (
         <div
           className={
@@ -686,7 +929,42 @@
             onToggle={(siteId) => onToggleSite(node.id, siteId)}
           />
 
+          {showListInside && (
+            <div className="roster" onMouseDown={e => e.stopPropagation()}>
+              {rosterChildren.map(c => (
+                <RosterRow
+                  key={c.id}
+                  node={c}
+                  selected={selectedId === c.id}
+                  sites={sites}
+                  dragId={dragId}
+                  dropTargetId={dropTargetId}
+                  onSelect={onSelect}
+                  onChange={onChange}
+                  onDelete={onDelete}
+                  onToggleSite={onToggleSite}
+                  onDragStart={onDragStart}
+                  onDragOver={onDragOver}
+                  onDragLeave={onDragLeave}
+                  onDrop={onDrop}
+                  onDragEnd={onDragEnd}
+                />
+              ))}
+              <button
+                className="roster-add"
+                onClick={e => { e.stopPropagation(); onAddChild(node.id); }}
+              >+ Add member</button>
+            </div>
+          )}
+
           <div className="actions">
+            {hasChildren && (
+              <button
+                className="node-btn view"
+                title={viewMode === "list" ? "Switch to tree view" : "Switch to compact list"}
+                onClick={e => { e.stopPropagation(); onToggleViewMode(node.id); }}
+              >{viewMode === "list" ? "⊟" : "≡"}</button>
+            )}
             {!isRoot && (
               <button
                 className="node-btn swap"
@@ -704,11 +982,13 @@
           </div>
 
           <div className="below">
-            <button
-              className="pill-btn"
-              title="Add a direct report"
-              onClick={e => { e.stopPropagation(); onAddChild(node.id); }}
-            >+ Report</button>
+            {!showListInside && (
+              <button
+                className="pill-btn"
+                title="Add a direct report"
+                onClick={e => { e.stopPropagation(); onAddChild(node.id); }}
+              >+ Report</button>
+            )}
             {!isRoot && (
               <button
                 className="pill-btn"
@@ -717,6 +997,17 @@
               >+ Peer</button>
             )}
           </div>
+
+          {hasChildren && !showListInside && (
+            <button
+              className="expand-toggle"
+              onClick={e => { e.stopPropagation(); onToggleCollapsed(node.id); }}
+              title={collapsed ? "Expand subordinates" : "Collapse subordinates"}
+            >
+              <span className="chev">{collapsed ? "▸" : "▾"}</span>
+              <span>{node.children.length}</span>
+            </button>
+          )}
         </div>
       );
     }
@@ -724,10 +1015,24 @@
     /* ---------- Tree renderer ---------- */
     function TreeNode(props) {
       const { node, isRoot, selectedId, ...rest } = props;
+      const collapsed = !!node.collapsed;
+      const viewMode = getViewMode(node);
+      const hasChildren = node.children && node.children.length > 0;
+      const showRosterInside = hasChildren && !collapsed && viewMode === "list";
+      const showTreeBranches = hasChildren && !collapsed && viewMode === "tree";
       return (
         <li>
-          <NodeCard node={node} isRoot={isRoot} selected={selectedId === node.id} {...rest} />
-          {node.children && node.children.length > 0 && (
+          <NodeCard
+            node={node}
+            isRoot={isRoot}
+            selected={selectedId === node.id}
+            selectedId={selectedId}
+            rosterChildren={showRosterInside ? node.children : null}
+            collapsed={collapsed}
+            viewMode={viewMode}
+            {...rest}
+          />
+          {showTreeBranches && (
             <ul>
               {node.children.map(c => (
                 <TreeNode key={c.id} node={c} isRoot={false} selectedId={selectedId} {...rest} />
@@ -816,6 +1121,19 @@
       }, []);
       const handleToggleSite = useCallback((id, siteId) => setTree(t => toggleSite(t, id, siteId)), []);
       const handleToggleType = useCallback((id, type) => setTree(t => setNodeType(t, id, type)), []);
+      const handleToggleCollapsed = useCallback((id) => setTree(t => {
+        const n = findNode(t, id);
+        if (!n) return t;
+        return setCollapsed(t, id, !n.collapsed);
+      }), []);
+      const handleToggleViewMode = useCallback((id) => setTree(t => {
+        const n = findNode(t, id);
+        if (!n) return t;
+        const next = getViewMode(n) === "list" ? "tree" : "list";
+        return setViewMode(t, id, next);
+      }), []);
+      const handleExpandAll = () => setTree(t => setCollapsedAll(t, false, false));
+      const handleCollapseGroups = () => setTree(t => setCollapsedAll(t, true, true));
 
       const handleSiteShort = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, short: val } : s));
       const handleSiteLabel = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, label: val } : s));
@@ -922,6 +1240,8 @@
             <div className="topbar-title">Organigram</div>
             <div className="topbar-actions">
               <input ref={fileInputRef} type="file" accept="application/json" onChange={handleImport} style={{display:"none"}} />
+              <button className="btn" onClick={handleCollapseGroups} title="Collapse all site/group rosters">Collapse groups</button>
+              <button className="btn" onClick={handleExpandAll} title="Expand everything">Expand all</button>
               <button className="btn primary" onClick={handleShare} title="Copy a link that includes the current organigram">Copy share link</button>
               <button className="btn" onClick={() => fileInputRef.current?.click()}>Import</button>
               <button className="btn" onClick={handleExport}>Export JSON</button>
@@ -936,7 +1256,7 @@
                 <div className="eyebrow">VWC · Mining Operations</div>
                 <h1>Organigram</h1>
                 <div className="rule"></div>
-                <p>Click any text to rename · Drag any card onto another to move it · Click a card and tap chips to set its sites</p>
+                <p>Click any text to rename (it auto-selects so you can overwrite) · Drag any card onto another to move it · Click a card and tap chips to set its sites · Use <strong>≡</strong> on a card to switch between tree and compact list view</p>
               </div>
 
               <Legend
@@ -961,6 +1281,8 @@
                     onDelete={handleDelete}
                     onToggleSite={handleToggleSite}
                     onToggleType={handleToggleType}
+                    onToggleCollapsed={handleToggleCollapsed}
+                    onToggleViewMode={handleToggleViewMode}
                     onDragStart={onDragStart}
                     onDragOver={onDragOver}
                     onDragLeave={onDragLeave}
@@ -978,7 +1300,7 @@
 
           {showTip && (
             <div className="tip">
-              <span>Click any text to edit · <kbd>Drag</kbd> a card onto another to move it · <kbd>+ Report</kbd> / <kbd>+ Peer</kbd> add branches · <kbd>×</kbd> deletes · Click chips to set sites</span>
+              <span>Click text to edit (auto-selects all) · <kbd>Drag</kbd> any card to move it · <kbd>≡</kbd> toggles compact list view · <kbd>▾</kbd> collapses subordinates · Click site chips to assign</span>
               <span className="x" onClick={dismissTip}>✕</span>
             </div>
           )}
