@@ -1,0 +1,992 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>VWC · Organigram</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --ink: #0E1A14;
+      --ink-2: #1C2A22;
+      --cream: #F4EDE0;
+      --cream-2: #EBE2D1;
+      --gold: #C9A64A;
+      --gold-2: #DAB331;
+      --gold-deep: #8E7327;
+      --taupe: #B9AA86;
+      --mute: #6B6450;
+
+      --dept-md: #C9A64A;
+      --dept-op: #4A8C6F;
+      --dept-sec: #A8443B;
+      --dept-pub: #5777A8;
+      --dept-sup: #A0772C;
+
+      --site-ext1: #8E7327;
+      --site-ext2: #B85C3A;
+      --site-proc: #3F6E58;
+
+      --line: rgba(201, 166, 74, 0.55);
+
+      --serif: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+      --sans:  "Inter", Helvetica, Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(201,166,74,0.10), transparent 60%),
+        radial-gradient(1000px 500px at 100% 110%, rgba(14,26,20,0.05), transparent 60%),
+        var(--cream);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app { min-height: 100vh; display: flex; flex-direction: column; }
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; gap: 18px;
+      padding: 14px 28px;
+      background: rgba(14, 26, 20, 0.96);
+      color: var(--cream);
+      border-bottom: 1px solid rgba(201,166,74,0.35);
+      backdrop-filter: blur(6px);
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand .logo {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--ink); border: 2px solid var(--gold-2);
+      overflow: hidden;
+    }
+    .brand .logo img { width: 100%; height: 100%; }
+    .brand .name {
+      font-family: var(--serif); font-weight: 600;
+      letter-spacing: 0.18em; font-size: 18px; color: var(--cream);
+    }
+    .brand .sub {
+      font-size: 10px; letter-spacing: 0.32em;
+      color: var(--gold-2); text-transform: uppercase; margin-top: 2px;
+    }
+    .topbar-title {
+      flex: 1; text-align: center;
+      font-family: var(--serif); font-size: 22px;
+      letter-spacing: 0.08em; color: var(--cream);
+    }
+    .topbar-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.04em;
+      padding: 8px 14px; border-radius: 999px;
+      border: 1px solid rgba(201,166,74,0.45);
+      background: transparent; color: var(--cream);
+      cursor: pointer; transition: all .15s ease;
+    }
+    .btn:hover { background: rgba(201,166,74,0.12); border-color: var(--gold-2); }
+    .btn.primary { background: var(--gold-2); color: var(--ink); border-color: var(--gold-2); }
+    .btn.primary:hover { background: var(--gold); border-color: var(--gold); }
+    .btn.danger:hover { background: rgba(168, 68, 59, 0.2); border-color: #a8443b; color: #f4cfca; }
+
+    .canvas { flex: 1; overflow: auto; padding: 56px 48px 96px; }
+    .stage { min-width: max-content; margin: 0 auto; }
+
+    .page-header { text-align: center; margin-bottom: 28px; }
+    .page-header .eyebrow {
+      letter-spacing: 0.4em; font-size: 11px;
+      color: var(--gold-deep); text-transform: uppercase;
+    }
+    .page-header h1 {
+      font-family: var(--serif); font-weight: 600; font-size: 42px;
+      margin: 8px 0 4px; color: var(--ink); letter-spacing: 0.02em;
+    }
+    .page-header .rule {
+      width: 64px; height: 1px; background: var(--gold); margin: 16px auto;
+    }
+    .page-header p { color: var(--mute); font-size: 13px; margin: 0; letter-spacing: 0.04em; }
+
+    /* Site legend / editor */
+    .legend {
+      display: flex; justify-content: center; gap: 22px;
+      margin: 8px auto 36px; flex-wrap: wrap;
+      font-size: 11px; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--mute);
+    }
+    .legend .item {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 10px; border-radius: 999px;
+      background: rgba(244,237,224,0.7);
+      border: 1px solid rgba(14,26,20,0.06);
+    }
+    .legend .swatch {
+      width: 10px; height: 10px; border-radius: 50%;
+      border: 1px solid rgba(14,26,20,0.2);
+    }
+    .legend .swatch[data-site="ext1"] { background: var(--site-ext1); }
+    .legend .swatch[data-site="ext2"] { background: var(--site-ext2); }
+    .legend .swatch[data-site="proc"] { background: var(--site-proc); }
+    .legend .short, .legend .label {
+      outline: none; cursor: text;
+    }
+    .legend .short {
+      font-weight: 700; color: var(--ink); padding: 0 2px;
+    }
+    .legend .dot { opacity: 0.4; }
+    .legend .short:focus, .legend .label:focus {
+      background: rgba(201,166,74,0.15);
+      box-shadow: inset 0 0 0 1px rgba(201,166,74,0.4);
+      border-radius: 3px;
+    }
+
+    /* Tree (CSS) */
+    .tree { display: flex; justify-content: center; }
+    .tree ul {
+      padding: 28px 0 0; position: relative;
+      display: flex; justify-content: center;
+      list-style: none; margin: 0; gap: 16px;
+    }
+    .tree li {
+      position: relative; list-style: none;
+      padding: 28px 14px 0; text-align: center;
+    }
+    .tree li::before, .tree li::after {
+      content: ''; position: absolute; top: 0;
+      right: 50%; width: 50%; height: 28px;
+      border-top: 1.5px solid var(--line);
+    }
+    .tree li::after {
+      right: auto; left: 50%;
+      border-left: 1.5px solid var(--line);
+    }
+    .tree li:only-child::before, .tree li:only-child::after { display: none; }
+    .tree li:only-child { padding-top: 28px; }
+    .tree li:first-child::before { border: 0; }
+    .tree li:last-child::after { border: 0; }
+    .tree li:last-child::before {
+      border-right: 1.5px solid var(--line);
+      border-radius: 0 6px 0 0;
+    }
+    .tree li:first-child::after { border-radius: 6px 0 0 0; }
+    .tree ul ul::before {
+      content: ''; position: absolute; top: 0; left: 50%;
+      width: 1.5px; height: 28px; background: var(--line);
+    }
+
+    /* Node */
+    .node {
+      position: relative; display: inline-block;
+      min-width: 200px; max-width: 240px;
+      padding: 14px 16px;
+      background: var(--cream);
+      border: 1px solid rgba(14,26,20,0.10);
+      border-radius: 6px;
+      box-shadow: 0 1px 2px rgba(14,26,20,0.04), 0 6px 18px rgba(14,26,20,0.06);
+      text-align: left;
+      transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
+      cursor: grab;
+    }
+    .node:active { cursor: grabbing; }
+    .node:hover {
+      box-shadow: 0 1px 2px rgba(14,26,20,0.06), 0 14px 36px rgba(14,26,20,0.14);
+      border-color: rgba(201,166,74,0.6);
+      transform: translateY(-1px);
+    }
+    .node.selected {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,166,74,0.22), 0 12px 30px rgba(14,26,20,0.14);
+    }
+    .node.dragging { opacity: 0.45; }
+    .node.drop-target {
+      border-color: var(--gold-2);
+      box-shadow: 0 0 0 3px rgba(201,166,74,0.35), 0 12px 30px rgba(14,26,20,0.14);
+      transform: translateY(-2px);
+    }
+
+    .node .accent {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 4px; border-radius: 6px 0 0 6px;
+      background: var(--dept-md);
+    }
+    .node[data-dept="md"]  .accent { background: var(--dept-md); }
+    .node[data-dept="op"]  .accent { background: var(--dept-op); }
+    .node[data-dept="sec"] .accent { background: var(--dept-sec); }
+    .node[data-dept="pub"] .accent { background: var(--dept-pub); }
+    .node[data-dept="sup"] .accent { background: var(--dept-sup); }
+
+    .node .role {
+      font-size: 10px; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--gold-deep);
+      margin: 0 0 6px; outline: none;
+    }
+    .node .name {
+      font-family: var(--serif); font-weight: 600;
+      font-size: 18px; color: var(--ink);
+      line-height: 1.2; margin: 0; outline: none;
+    }
+    .node .name[contenteditable="true"]:focus,
+    .node .role[contenteditable="true"]:focus {
+      background: rgba(201,166,74,0.12);
+      border-radius: 3px;
+      box-shadow: inset 0 0 0 1px rgba(201,166,74,0.4);
+      padding: 1px 4px;
+      margin-left: -4px; margin-right: -4px;
+    }
+
+    .node.root {
+      background: var(--ink); color: var(--cream);
+      border-color: var(--gold-2);
+      min-width: 240px; padding: 18px 20px;
+    }
+    .node.root::before {
+      content: ''; position: absolute; inset: 4px;
+      border: 1px solid rgba(201,166,74,0.32);
+      border-radius: 4px; pointer-events: none;
+    }
+    .node.root .role { color: var(--gold-2); }
+    .node.root .name { color: var(--cream); }
+    .node.root .accent { display: none; }
+
+    .node.group {
+      background: linear-gradient(180deg, #1C2A22 0%, #0E1A14 100%);
+      color: var(--cream);
+      border-color: rgba(201,166,74,0.4);
+      min-width: 180px; padding: 10px 18px; text-align: center;
+    }
+    .node.group .accent { display: none; }
+    .node.group .role {
+      color: var(--gold-2);
+      font-size: 9px; letter-spacing: 0.34em;
+      margin: 0 0 2px;
+    }
+    .node.group .name {
+      font-size: 16px; color: var(--cream); letter-spacing: 0.04em;
+    }
+    .node.group .site-chips { justify-content: center; margin-top: 6px; }
+
+    /* Site chips on cards */
+    .site-chips {
+      display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px;
+    }
+    .site-chip {
+      font-size: 9px; letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 2px 7px; border-radius: 999px;
+      border: 1px solid currentColor;
+      color: var(--mute);
+      background: transparent;
+      opacity: 0.32;
+      cursor: default;
+      transition: opacity .15s ease, transform .15s ease, background .15s ease;
+      user-select: none;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    .site-chip.active { opacity: 1; font-weight: 700; }
+    .site-chip[data-site="ext1"].active { color: var(--site-ext1); background: rgba(142,115,39,0.12); }
+    .site-chip[data-site="ext2"].active { color: var(--site-ext2); background: rgba(184,92,58,0.12); }
+    .site-chip[data-site="proc"].active { color: var(--site-proc); background: rgba(63,110,88,0.12); }
+    .node.selected .site-chip { cursor: pointer; }
+    .node.selected .site-chip:hover { transform: translateY(-1px); opacity: 1; }
+    .node.group .site-chip { border-color: rgba(244,237,224,0.35); color: rgba(244,237,224,0.6); }
+    .node.group .site-chip.active { color: var(--cream); background: rgba(201,166,74,0.2); border-color: var(--gold-2); }
+
+    /* Action buttons on node */
+    .node .actions {
+      position: absolute;
+      top: -14px; right: -8px;
+      display: flex; gap: 4px;
+      opacity: 0; transform: translateY(-4px);
+      transition: opacity .15s ease, transform .15s ease;
+      pointer-events: none;
+    }
+    .node:hover .actions, .node.selected .actions, .node:focus-within .actions {
+      opacity: 1; transform: translateY(0); pointer-events: auto;
+    }
+    .node-btn {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--ink); color: var(--cream);
+      border: 1px solid var(--gold-2);
+      font-size: 14px; font-weight: 600; line-height: 1;
+      display: inline-flex; align-items: center; justify-content: center;
+      cursor: pointer; padding: 0;
+      box-shadow: 0 4px 10px rgba(14,26,20,0.25);
+      transition: background .15s ease, transform .15s ease;
+    }
+    .node-btn:hover { background: var(--gold-2); color: var(--ink); transform: translateY(-1px); }
+    .node-btn.del:hover { background: #a8443b; color: var(--cream); border-color: #a8443b; }
+    .node-btn.swap { font-size: 12px; }
+
+    .node .below {
+      position: absolute; left: 50%;
+      transform: translate(-50%, 6px);
+      bottom: -20px;
+      display: flex; gap: 6px;
+      opacity: 0;
+      transition: opacity .15s ease, transform .15s ease;
+      pointer-events: none;
+      z-index: 5;
+    }
+    .node:hover .below, .node.selected .below {
+      opacity: 1; transform: translate(-50%, 0); pointer-events: auto;
+    }
+    .pill-btn {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 999px;
+      background: var(--cream); color: var(--ink);
+      border: 1px solid var(--gold);
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(14,26,20,0.12);
+      transition: all .15s ease; white-space: nowrap;
+    }
+    .pill-btn:hover { background: var(--gold-2); border-color: var(--gold-2); }
+
+    .tip {
+      position: fixed; bottom: 18px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(14,26,20,0.94);
+      color: var(--cream); font-size: 12px;
+      letter-spacing: 0.04em; padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(201,166,74,0.4);
+      box-shadow: 0 12px 30px rgba(14,26,20,0.25);
+      z-index: 40;
+      display: flex; align-items: center; gap: 10px;
+      max-width: 92vw;
+    }
+    .tip kbd {
+      font-size: 10px;
+      background: rgba(201,166,74,0.18);
+      border: 1px solid rgba(201,166,74,0.4);
+      padding: 2px 6px; border-radius: 4px;
+      color: var(--gold-2);
+    }
+    .tip .x { cursor: pointer; opacity: 0.7; padding: 0 2px; }
+    .tip .x:hover { opacity: 1; }
+
+    .toast {
+      position: fixed; top: 78px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--ink); color: var(--cream);
+      font-size: 12px; padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--gold-2);
+      box-shadow: 0 12px 30px rgba(14,26,20,0.3);
+      z-index: 60;
+      letter-spacing: 0.04em;
+      animation: toast .25s ease both;
+    }
+    @keyframes toast {
+      from { opacity: 0; transform: translate(-50%, -8px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .footer {
+      font-size: 10px; letter-spacing: 0.3em;
+      text-transform: uppercase; color: var(--mute);
+      text-align: center; padding: 24px 0 8px;
+    }
+
+    @media print {
+      .topbar, .tip, .toast { display: none !important; }
+      body { background: #fff; }
+      .canvas { overflow: visible; padding: 24px; }
+      .node:hover .actions, .node:hover .below { opacity: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="application/json" id="logo-data">data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9Ii0xOTg1IDI3NSAxNjcwIDE2NzAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxjaXJjbGUgY3g9Ii0xMTQ3Ljk2IiBjeT0iMTExMCIgcj0iODM0Ljk4NCIgZmlsbD0iI0RBQjMzMSI+PC9jaXJjbGU+PGNpcmNsZSBjeD0iLTExNDcuOTYiIGN5PSIxMTEwIiByPSI3NjkiIGZpbGw9IiMxMDIyMTkiPjwvY2lyY2xlPjxnIGZpbGw9IiNEQUIzMzEiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xOTQyLjAzIDI4MS42NDcpIj48cGF0aCBkPSJNNzY0LjkwMyA4MjYuMTMxQzY5Ni4wODcgOTc3LjAzNCA2MTUuODE3IDExNjEuODkgNTk1LjQ5NSAxMjA5LjIxIDU5NC40NzkgMTIwOC4wMyA1NzMuODczIDExNTUuOCA1NjguODk3IDExNDUuMDUgNTY1LjY4OSAxMTM4LjExIDU1OC41NTYgMTEyMy4yMiA1NTMuMDQ3IDExMTEuOTUgNTQyLjAxNSAxMDg5LjM4IDUxNy45MDMgMTAzOS42MSA1MDcuMDI4IDEwMTYuOTYgNTAzLjE5OSAxMDA4Ljk4IDQ4OS4zOTEgOTgwLjYzNCA0NzYuMzQzIDk1My45NTkgNDYzLjI5NCA5MjcuMjg0IDQ0OS43OTEgODk5LjM4NCA0NDYuMzM1IDg5MS45NTkgNDQyLjg3OSA4ODQuNTM0IDQzMi40MTcgODYzLjE1OSA0MjMuMDg2IDg0NC40NTkgNDEzLjc1NSA4MjUuNzU5IDQwNC42NzggODA3LjMwOSA0MDIuOTE1IDgwMy40NTkgNDAxLjE1MyA3OTkuNjA5IDM5My4wMTggNzgyLjk1OSAzODQuODM4IDc2Ni40NTkgMzc2LjY1OCA3NDkuOTU5IDM2NC44MjYgNzI1Ljg4NCAzNTguNTQ1IDcxMi45NTkgMjk3Ljk3OCA1ODguMzMzIDI4OS45OTEgNTc0Ljk2IDI2Ni42ODQgNTU5LjE2MyAyNTUuMiA1NTEuMzc5IDIxOC44MDEgNTM4Ljk1OSAyMDcuNDcxIDUzOC45NTkgMjAzLjMxNyA1MzguOTU5IDIwMi44MiA1MzcuMjkgMjAyLjgyIDUyMy4zMzRMMjAyLjgyIDUxMy45NTkgMzM3LjgyIDUxMy45NTkgNDcyLjgyIDUxMy45NTkgNDcyLjgyIDUyMi4zOTRDNDcyLjgyIDUzNi4wNzcgNDc0LjE1NyA1MzUuMDY0IDQ1MS44MjQgNTM4LjMwMyAzOTYuOTY5IDU0Ni4yNTggMzk1LjAxNCA1NTguMjIyIDQzNS4yOTggNjM5LjQ1OSA0NDEuNTcxIDY1Mi4xMDkgNDUxLjk1NiA2NzMuNDg0IDQ1OC4zNzYgNjg2Ljk1OSA0NjQuNzk2IDcwMC40MzQgNDc0LjY4MSA3MjAuOTA5IDQ4MC4zNDIgNzMyLjQ1OSA0OTEuODEyIDc1NS44NjEgNTAxLjgwOSA3NzYuNjg5IDUwNS40OTIgNzg0Ljg1OSA1MDcuNjYgNzg5LjY2NiA1MTkuNjAxIDgxNC41OSA1NTcuMjg0IDg5Mi45NTkgNTYzLjQ5OSA5MDUuODg0IDU3My45ODggOTI3LjcwOSA1ODAuNTk0IDk0MS40NTkgNTg3LjIgOTU1LjIwOSA1OTYuNTI3IDk3NC41NTkgNjAxLjMyIDk4NC40NTkgNjExLjc0OSAxMDA2IDYxOS44MSAxMDI3LjM5IDYyMC4zMDMgMTAyNi4yOCA2OTkuNzk4IDg0Ni4zMjkgNzIxLjQxNCA3OTQuNDkyIDc2NC45MDMgNjkxLjY5NSA4MzEuNDU3IDg0MS40MjIgODk4LjUxNCA5OTEuMzA5IDk2My43MjIgMTE0MS43MyA5NjQuMzIxIDExNDMuMTEgOTkwLjI2NiAxMDY4Ljg2IDk5Mi42MTIgMTA2Mi43NyA5OTkuMTcgMTA2NC45OSAxMDA4LjU2IDEwNjcuOTcgMTAxNi42OSAxMDcwIDEwMjUuNCAxMDcyLjE4IDEwMzYuMTkgMTA3NC4wOCAxMDQzLjA5IDEwNzUuMjkgMTAyMS45NSAxMTI3Ljc5IDEwMTYuMzggMTE0MC45NSA5NTEuMjg1IDEyOTMuNDYgODkzLjA0NCAxMTQ5LjM4IDgzNS43NDkgMTAwNy41IDc2NC45MDMgODI2LjEzMVpNMTEwMC4zMiAxMDU1LjI5QzEwNDguNzYgMTA1MS4wNSAxMDAzLjAxIDEwNDAuMTkgOTY0LjgyIDEwMjMuMTUgOTQ2LjI0OSAxMDE0Ljg2IDk0Ny43NSAxMDE1Ljk0IDk0NS4xMTMgMTAwOS45OCA5NDEuMDY1IDEwMDAuODMgODM0LjQ0IDc2My42OTYgODI3LjMxOCA3NDcuOTU5IDgwOC4xMDEgNzA1LjUwNCA4MDcuNzEyIDcwOS42IDgxOC4wNDcgNjgzLjQ1OSA4NzMuNDk5IDU0My4xOTQgMTA0Ny41MSA0NzQuMzI5IDEyNDguNzUgNTEzLjAwNiAxMjY2Ljc4IDUxNi40NyAxMzE0LjAyIDUyOS44MzEgMTMxNi4zIDUzMi4xMDkgMTMxNi41MiA1MzIuMzI1IDEzMTcuMTUgNTM4LjU2OCAxMzE3LjcyIDU0NS45ODEgMTMxOS4xOCA1NjUuMjc1IDEzMjEuNSA1OTMuMTkyIDEzMjQuMzUgNjI1LjU5NiAxMzI1LjcxIDY0MS4wNzEgMTMyNi44MiA2NTQuMDM5IDEzMjYuODIgNjU0LjQxNCAxMzI2LjgyIDY1NS4xODMgMTI5NS4yNSA2NTQuNzM4IDEyOTQuNSA2NTMuOTU5IDEyOTQuMjMgNjUzLjY4NCAxMjkyLjYgNjQ1LjAwMSAxMjkwLjg3IDYzNC42NjIgMTI4Mi4wOCA1ODIuMDggMTI2My41MiA1NTkuODY0IDEyMTQuNzcgNTQzLjU2OSAxMDkwLjk2IDUwMi4xNzkgOTU3LjUxMyA1NzEuMjU1IDkyNi43MzggNjkyLjY2MSA4OTAuNjQxIDgzNS4wNTkgOTUyLjQ0MSA5NzMuNDEgMTA2OC4zMiAxMDA5LjYyIDExNjguMjYgMTA0MC44NSAxMjU5LjI3IDEwMTYgMTI4OC42NSA5NDkuNDU5IDEyOTcuNjEgOTI5LjE3MiAxMzA3LjgyIDg5OS41ODkgMTMwNy44MiA4OTMuOTM0IDEzMDcuODIgODkxLjI0MSAxMzEwLjMyIDg5MC44MzUgMTMyNC44MiA4OTEuMTdMMTMzNy4zMiA4OTEuNDU5IDEzMzcuMzIgOTQ4Ljk1OEMxMzM3LjMyIDEwMDYuNDYgMTMzNy4zMiAxMDA2LjQ2IDEzMzMuODIgMTAwOC4yIDEzMzEuODkgMTAwOS4xNiAxMzIyLjY3IDEwMTMuMjkgMTMxMy4zMiAxMDE3LjM3IDEyNjQuNzYgMTAzOC41OSAxMjIyLjQ1IDEwNTAuMTggMTE3Ny45OSAxMDU0LjQ1IDExNjMuODcgMTA1NS44IDExMTMuMjEgMTA1Ni4zNiAxMTAwLjMyIDEwNTUuMjlaTTYwOC41NzMgOTE5LjcyMUM1OTEuMDY4IDg4My4wOCA1OTAuOTYgODkzLjk4MSA2MTAuODg0IDg0NC40NTkgNjUzLjg3IDczNy42MTUgNjc4LjM4NyA2NzQuNjUgNzE3Ljk3NyA1NzIuNjY3IDcxNy45MTYgNTU1LjQ2MSA2OTguOTAyIDU0NC43NTMgNjY1LjMyIDU0MC43MUw2NTQuMzIgNTM5LjM4NSA2NTQuMDQgNTI2LjY3MiA2NTMuNzYgNTEzLjk1OSA3NTAuMjkgNTEzLjk1OSA4NDYuODIgNTEzLjk1OSA4NDYuODIgNTI0Ljk4NEM4NDYuODIgNTM3LjkyNyA4NDguMDI5IDUzNi43NjEgODMxLjgyIDUzOS40NDcgNzk2Ljg4MiA1NDUuMjM3IDc3OS4wMTMgNTYwLjU1NCA3NjEuODA1IDU5OS40NTkgNzQ3LjU1NSA2MzEuNjc3IDcyNS44MjQgNjgyLjgzMiA3MTIuMzE1IDcxNS45NTkgNzA4LjgzOCA3MjQuNDg0IDcwNC41NzUgNzM0LjgzNCA3MDIuODQgNzM4Ljk1OSA3MDEuMTA2IDc0My4wODQgNjk2LjM5IDc1NC41NTkgNjkyLjM2MSA3NjQuNDU5IDY4OC4zMzMgNzc0LjM1OSA2ODMuNDY4IDc4Ni4wNTkgNjgxLjU1MiA3OTAuNDU5IDY3OS42MzUgNzk0Ljg1OSA2NzUuNTA0IDgwNC43NTkgNjcyLjM3MiA4MTIuNDU5IDY2NS44NjIgODI4LjQ2MyA2NjAuODk0IDg0MC4xNDYgNjU0LjUxNCA4NTQuNDU5IDY1Mi4wNjIgODU5Ljk1OSA2NDcuMzU3IDg3MS42NTkgNjQ0LjA1OCA4ODAuNDU5IDY0MC43NTkgODg5LjI1OSA2MzUuNzAxIDkwMS42MzQgNjMyLjgxOCA5MDcuOTU5IDYyOS45MzQgOTE0LjI4NCA2MjUuOTQyIDkyMy45MjIgNjIzLjk0NyA5MjkuMzc3IDYxOS4xMyA5NDIuNTQ5IDYxOS42MyA5NDIuODY0IDYwOC41NzMgOTE5LjcyMVoiPjwvcGF0aD48cGF0aCBkPSJNMTAyOS43OSA5NjMuMTQ3QzEwNzYuOCA4MzQuNjY0IDEwODUuMTkgODExLjc0MiAxMTI5LjkxIDY4OS41MiAxMTM0LjY2IDY3Ni41MjMgMTEyMC4zNyA2NjkuNjM3IDEwOTMuMzYgNjY2LjM4NUwxMDg0LjUyIDY2NS4zMiAxMDg0LjI5IDY1NS4wOTUgMTA4NC4wNyA2NDQuODY5IDExNjEuNzEgNjQ0Ljg2OSAxMjM5LjM1IDY0NC44NjkgMTIzOS4zNSA2NTMuNzM3QzEyMzkuMzUgNjY0LjE0NyAxMjQwLjMyIDY2My4yMDkgMTIyNy4yOCA2NjUuMzcgMTE5OS4xOCA2NzAuMDI3IDExODMuMjQgNjgxLjY2MyAxMTcxLjc4IDcxMy45MDMgMTE1OC4wOSA3NTIuNDE0IDEwNzcuNiA5NzguNzM1IDEwNzMuOTkgOTg4LjM4MyAxMDcyLjIgOTkzLjI4IDEwMjQuOTEgOTc2LjQ4NyAxMDI5Ljc5IDk2My4xNDdaIj48L3BhdGg+PC9nPjwvc3ZnPg==</script>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    const LOGO_SRC = document.getElementById('logo-data').textContent.trim();
+
+    const DEFAULT_SITES = [
+      { id: "ext1", label: "Extraction Site 1", short: "EXT-1" },
+      { id: "ext2", label: "Extraction Site 2", short: "EXT-2" },
+      { id: "proc", label: "Processing Site",   short: "PROC"  }
+    ];
+    const ALL_SITES = DEFAULT_SITES.map(s => s.id);
+
+    const DEFAULT_TREE = {
+      id: "n_md", type: "person",
+      name: "Emmanuel Boadi", role: "Managing Director",
+      dept: "md", sites: [...ALL_SITES],
+      children: [
+        { id: "n_pub", type: "person", name: "Nana Yaw Tabiri", role: "Public Relations Director", dept: "pub", sites: [...ALL_SITES], children: [] },
+        {
+          id: "n_op", type: "person", name: "Edward Ankapong", role: "Plant Manager", dept: "op", sites: [...ALL_SITES],
+          children: [
+            {
+              id: "n_grp_ext1", type: "group", name: "Extraction Site 1", role: "Site",
+              dept: "op", sites: ["ext1"],
+              children: [
+                { id: "n_e1_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext1"], children: [] },
+                { id: "n_e1_o1", type: "person", name: "Operator", role: "Operator",     dept: "op", sites: ["ext1"], children: [] },
+                { id: "n_e1_o2", type: "person", name: "Operator", role: "Operator",     dept: "op", sites: ["ext1"], children: [] }
+              ]
+            },
+            {
+              id: "n_grp_ext2", type: "group", name: "Extraction Site 2", role: "Site",
+              dept: "op", sites: ["ext2"],
+              children: [
+                { id: "n_e2_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext2"], children: [] },
+                { id: "n_e2_o1", type: "person", name: "Operator", role: "Operator",     dept: "op", sites: ["ext2"], children: [] },
+                { id: "n_e2_o2", type: "person", name: "Operator", role: "Operator",     dept: "op", sites: ["ext2"], children: [] }
+              ]
+            },
+            {
+              id: "n_grp_proc", type: "group", name: "Processing Site", role: "Site",
+              dept: "op", sites: ["proc"],
+              children: [
+                { id: "n_p_fm", type: "person", name: "Akwasi Eric", role: "Site Foreman", dept: "op", sites: [...ALL_SITES], children: [] }
+              ]
+            }
+          ]
+        },
+        {
+          id: "n_sec", type: "person", name: "Emmanuel Addai", role: "Security Director", dept: "sec", sites: [...ALL_SITES],
+          children: [
+            { id: "n_sec_1", type: "person", name: "Osman Mumuni",     role: "Senior Security", dept: "sec", sites: [...ALL_SITES], children: [] },
+            { id: "n_sec_2", type: "person", name: "Isaac",             role: "Senior Security", dept: "sec", sites: [...ALL_SITES], children: [] },
+            { id: "n_sec_3", type: "person", name: "Alassan Issan Kaa", role: "Security",        dept: "sec", sites: [...ALL_SITES], children: [] },
+            { id: "n_sec_4", type: "person", name: "Nana Adu",          role: "Security",        dept: "sec", sites: [...ALL_SITES], children: [] },
+            { id: "n_sec_5", type: "person", name: "Prince Kyei",       role: "Junior Security", dept: "sec", sites: [...ALL_SITES], children: [] }
+          ]
+        },
+        { id: "n_sup", type: "person", name: "Daniel Agyei", role: "Supply Chain Manager", dept: "sup", sites: [...ALL_SITES], children: [] }
+      ]
+    };
+
+    const STORAGE_KEY_TREE  = "vwc_organigram_v3_tree";
+    const STORAGE_KEY_SITES = "vwc_organigram_v3_sites";
+    const TIP_KEY = "vwc_organigram_v3_tip";
+
+    const uid = () => "n_" + Math.random().toString(36).slice(2, 9);
+
+    /* ---------- Tree helpers ---------- */
+    function mapTree(node, fn) {
+      const next = fn(node) ?? node;
+      return { ...next, children: (next.children || []).map(c => mapTree(c, fn)) };
+    }
+    function updateNode(tree, id, patch) {
+      return mapTree(tree, n => n.id === id ? { ...n, ...patch } : n);
+    }
+    function findNode(tree, id) {
+      if (tree.id === id) return tree;
+      for (const c of (tree.children || [])) { const r = findNode(c, id); if (r) return r; }
+      return null;
+    }
+    function findParent(tree, id, parent = null) {
+      if (tree.id === id) return parent;
+      for (const c of (tree.children || [])) {
+        const r = findParent(c, id, tree); if (r) return r;
+      }
+      return null;
+    }
+    function isDescendant(node, id) {
+      if (node.id === id) return true;
+      return (node.children || []).some(c => isDescendant(c, id));
+    }
+    function addChild(tree, parentId) {
+      return mapTree(tree, n => {
+        if (n.id !== parentId) return n;
+        const child = {
+          id: uid(), type: "person",
+          name: "New member", role: "Role",
+          dept: n.dept || "md",
+          sites: [...(n.sites || [])],
+          children: []
+        };
+        return { ...n, children: [...(n.children || []), child] };
+      });
+    }
+    function deleteNode(tree, id) {
+      if (tree.id === id) return tree;
+      const recur = node => ({
+        ...node,
+        children: (node.children || []).filter(c => c.id !== id).map(recur)
+      });
+      return recur(tree);
+    }
+    function toggleSite(tree, id, siteId) {
+      return mapTree(tree, n => {
+        if (n.id !== id) return n;
+        const has = (n.sites || []).includes(siteId);
+        const sites = has ? n.sites.filter(s => s !== siteId) : [...(n.sites || []), siteId];
+        return { ...n, sites };
+      });
+    }
+    function setNodeType(tree, id, type) {
+      return mapTree(tree, n => n.id === id ? { ...n, type } : n);
+    }
+    function reparent(tree, draggedId, newParentId) {
+      const node = findNode(tree, draggedId);
+      if (!node) return tree;
+      if (draggedId === newParentId) return tree;
+      if (isDescendant(node, newParentId)) return tree; // no cycles
+      // Remove from old parent
+      let removed = null;
+      const t1 = (function recur(n){
+        const kids = (n.children || []);
+        const idx = kids.findIndex(c => c.id === draggedId);
+        if (idx >= 0) {
+          removed = kids[idx];
+          return { ...n, children: kids.slice(0, idx).concat(kids.slice(idx + 1)).map(recur) };
+        }
+        return { ...n, children: kids.map(recur) };
+      })(tree);
+      if (!removed) return tree;
+      // Insert into new parent
+      const t2 = mapTree(t1, n => n.id === newParentId
+        ? { ...n, children: [...(n.children || []), removed] }
+        : n
+      );
+      return t2;
+    }
+
+    /* ---------- URL state sharing ---------- */
+    function encodeStateToHash(state) {
+      try {
+        const json = JSON.stringify(state);
+        const b64 = btoa(unescape(encodeURIComponent(json)));
+        return b64;
+      } catch (e) { return null; }
+    }
+    function decodeStateFromHash(hash) {
+      try {
+        if (!hash) return null;
+        const m = hash.match(/data=([A-Za-z0-9+/=_-]+)/);
+        if (!m) return null;
+        const json = decodeURIComponent(escape(atob(m[1])));
+        return JSON.parse(json);
+      } catch (e) { return null; }
+    }
+
+    /* ---------- Editable text ---------- */
+    function Editable({ value, onChange, className, placeholder, onClick }) {
+      const ref = useRef(null);
+      useEffect(() => {
+        if (!ref.current) return;
+        if (document.activeElement === ref.current) return;
+        if (ref.current.textContent !== value) ref.current.textContent = value;
+      }, [value]);
+      return (
+        <div
+          ref={ref}
+          className={className}
+          contentEditable
+          suppressContentEditableWarning
+          spellCheck={false}
+          onInput={e => onChange(e.currentTarget.textContent || "")}
+          onKeyDown={e => {
+            if (e.key === "Enter") { e.preventDefault(); e.currentTarget.blur(); }
+            if (e.key === "Escape") { e.currentTarget.blur(); }
+          }}
+          onClick={e => { e.stopPropagation(); onClick && onClick(); }}
+          onMouseDown={e => e.stopPropagation()}
+          onDragStart={e => { e.preventDefault(); e.stopPropagation(); }}
+          data-placeholder={placeholder}
+        >
+          {value}
+        </div>
+      );
+    }
+
+    /* ---------- Site chips ---------- */
+    function SiteChips({ sites, active, selected, onToggle }) {
+      return (
+        <div className="site-chips">
+          {sites.map(s => {
+            const isActive = (active || []).includes(s.id);
+            return (
+              <span
+                key={s.id}
+                className={"site-chip" + (isActive ? " active" : "")}
+                data-site={s.id}
+                title={s.label + (selected ? " — click to toggle" : "")}
+                onMouseDown={e => e.stopPropagation()}
+                onClick={e => {
+                  if (!selected) return;
+                  e.stopPropagation();
+                  onToggle(s.id);
+                }}
+              >{s.short}</span>
+            );
+          })}
+        </div>
+      );
+    }
+
+    /* ---------- Node ---------- */
+    function NodeCard(props) {
+      const {
+        node, isRoot, selected, sites,
+        dragId, dropTargetId,
+        onSelect, onChange, onAddChild, onAddSibling, onDelete,
+        onToggleSite, onToggleType,
+        onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd
+      } = props;
+      const isGroup = node.type === "group";
+      const isDragging = dragId === node.id;
+      const isDropTarget = dropTargetId === node.id;
+      return (
+        <div
+          className={
+            "node" +
+            (isRoot ? " root" : "") +
+            (isGroup ? " group" : "") +
+            (selected ? " selected" : "") +
+            (isDragging ? " dragging" : "") +
+            (isDropTarget ? " drop-target" : "")
+          }
+          data-dept={node.dept}
+          draggable={!isRoot}
+          onClick={e => { e.stopPropagation(); onSelect(node.id); }}
+          onDragStart={e => onDragStart(e, node.id)}
+          onDragEnd={onDragEnd}
+          onDragOver={e => onDragOver(e, node.id)}
+          onDragLeave={e => onDragLeave(e, node.id)}
+          onDrop={e => onDrop(e, node.id)}
+        >
+          <span className="accent" />
+
+          {!isGroup && (
+            <Editable
+              className="role"
+              value={node.role}
+              onChange={v => onChange(node.id, { role: v })}
+              placeholder="Role"
+              onClick={() => onSelect(node.id)}
+            />
+          )}
+          {isGroup && <div className="role">Site</div>}
+
+          <Editable
+            className="name"
+            value={node.name}
+            onChange={v => onChange(node.id, { name: v })}
+            placeholder={isGroup ? "Site name" : "Full name"}
+            onClick={() => onSelect(node.id)}
+          />
+
+          <SiteChips
+            sites={sites}
+            active={node.sites}
+            selected={selected}
+            onToggle={(siteId) => onToggleSite(node.id, siteId)}
+          />
+
+          <div className="actions">
+            {!isRoot && (
+              <button
+                className="node-btn swap"
+                title={isGroup ? "Convert to person" : "Convert to site/group"}
+                onClick={e => { e.stopPropagation(); onToggleType(node.id, isGroup ? "person" : "group"); }}
+              >{isGroup ? "◐" : "▣"}</button>
+            )}
+            {!isRoot && (
+              <button
+                className="node-btn del"
+                title="Delete node and its branches"
+                onClick={e => { e.stopPropagation(); onDelete(node.id); }}
+              >×</button>
+            )}
+          </div>
+
+          <div className="below">
+            <button
+              className="pill-btn"
+              title="Add a direct report"
+              onClick={e => { e.stopPropagation(); onAddChild(node.id); }}
+            >+ Report</button>
+            {!isRoot && (
+              <button
+                className="pill-btn"
+                title="Add a peer at the same level"
+                onClick={e => { e.stopPropagation(); onAddSibling(node.id); }}
+              >+ Peer</button>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    /* ---------- Tree renderer ---------- */
+    function TreeNode(props) {
+      const { node, isRoot, selectedId, ...rest } = props;
+      return (
+        <li>
+          <NodeCard node={node} isRoot={isRoot} selected={selectedId === node.id} {...rest} />
+          {node.children && node.children.length > 0 && (
+            <ul>
+              {node.children.map(c => (
+                <TreeNode key={c.id} node={c} isRoot={false} selectedId={selectedId} {...rest} />
+              ))}
+            </ul>
+          )}
+        </li>
+      );
+    }
+
+    /* ---------- Legend ---------- */
+    function Legend({ sites, onShortChange, onLabelChange }) {
+      return (
+        <div className="legend">
+          {sites.map(s => (
+            <span className="item" key={s.id}>
+              <span className="swatch" data-site={s.id}></span>
+              <span
+                className="short"
+                contentEditable
+                suppressContentEditableWarning
+                spellCheck={false}
+                onInput={e => onShortChange(s.id, e.currentTarget.textContent || "")}
+                onKeyDown={e => { if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); e.currentTarget.blur(); } }}
+              >{s.short}</span>
+              <span className="dot">·</span>
+              <span
+                className="label"
+                contentEditable
+                suppressContentEditableWarning
+                spellCheck={false}
+                onInput={e => onLabelChange(s.id, e.currentTarget.textContent || "")}
+                onKeyDown={e => { if (e.key === "Enter" || e.key === "Escape") { e.preventDefault(); e.currentTarget.blur(); } }}
+              >{s.label}</span>
+            </span>
+          ))}
+        </div>
+      );
+    }
+
+    /* ---------- App ---------- */
+    function App() {
+      // Initial state: URL hash > localStorage > defaults
+      const initial = (() => {
+        const fromHash = decodeStateFromHash(location.hash);
+        if (fromHash && fromHash.tree && fromHash.sites) return fromHash;
+        try {
+          const tree = JSON.parse(localStorage.getItem(STORAGE_KEY_TREE) || "null");
+          const sites = JSON.parse(localStorage.getItem(STORAGE_KEY_SITES) || "null");
+          if (tree && sites) return { tree, sites };
+        } catch(e) {}
+        return { tree: DEFAULT_TREE, sites: DEFAULT_SITES };
+      })();
+
+      const [tree, setTree] = useState(initial.tree);
+      const [sites, setSites] = useState(initial.sites);
+      const [selectedId, setSelectedId] = useState(null);
+      const [showTip, setShowTip] = useState(() => localStorage.getItem(TIP_KEY) !== "0");
+      const [dragId, setDragId] = useState(null);
+      const [dropTargetId, setDropTargetId] = useState(null);
+      const [toast, setToast] = useState(null);
+
+      useEffect(() => { try { localStorage.setItem(STORAGE_KEY_TREE, JSON.stringify(tree)); } catch(e) {} }, [tree]);
+      useEffect(() => { try { localStorage.setItem(STORAGE_KEY_SITES, JSON.stringify(sites)); } catch(e) {} }, [sites]);
+
+      // Toast lifecycle
+      useEffect(() => {
+        if (!toast) return;
+        const t = setTimeout(() => setToast(null), 1800);
+        return () => clearTimeout(t);
+      }, [toast]);
+
+      const handleChange   = useCallback((id, patch) => setTree(t => updateNode(t, id, patch)), []);
+      const handleAddChild = useCallback((id) => setTree(t => addChild(t, id)), []);
+      const handleAddSibling = useCallback((id) => {
+        setTree(t => {
+          const parent = findParent(t, id);
+          if (!parent) return t;
+          return addChild(t, parent.id);
+        });
+      }, []);
+      const handleDelete = useCallback((id) => {
+        if (!window.confirm("Delete this node and all of its branches?")) return;
+        setTree(t => deleteNode(t, id));
+        setSelectedId(null);
+      }, []);
+      const handleToggleSite = useCallback((id, siteId) => setTree(t => toggleSite(t, id, siteId)), []);
+      const handleToggleType = useCallback((id, type) => setTree(t => setNodeType(t, id, type)), []);
+
+      const handleSiteShort = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, short: val } : s));
+      const handleSiteLabel = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, label: val } : s));
+
+      // Drag and drop reparenting
+      const onDragStart = (e, id) => {
+        e.stopPropagation();
+        setDragId(id);
+        try { e.dataTransfer.setData('text/plain', id); } catch (err) {}
+        e.dataTransfer.effectAllowed = "move";
+      };
+      const onDragOver = (e, id) => {
+        if (!dragId) return;
+        if (dragId === id) return;
+        const dragged = findNode(tree, dragId);
+        if (!dragged) return;
+        if (isDescendant(dragged, id)) return; // cannot drop into own subtree
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        if (dropTargetId !== id) setDropTargetId(id);
+      };
+      const onDragLeave = (e, id) => {
+        if (dropTargetId === id) setDropTargetId(null);
+      };
+      const onDrop = (e, id) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!dragId) return;
+        if (dragId === id) { setDragId(null); setDropTargetId(null); return; }
+        setTree(t => reparent(t, dragId, id));
+        setDragId(null);
+        setDropTargetId(null);
+      };
+      const onDragEnd = () => {
+        setDragId(null);
+        setDropTargetId(null);
+      };
+
+      const handleReset = () => {
+        if (!window.confirm("Reset to the default organigram? Your changes will be lost.")) return;
+        setTree(DEFAULT_TREE);
+        setSites(DEFAULT_SITES);
+        setSelectedId(null);
+      };
+      const handleExport = () => {
+        const payload = { tree, sites };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = "vwc-organigram.json";
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+      const handleImport = (e) => {
+        const f = e.target.files?.[0];
+        if (!f) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          try {
+            const obj = JSON.parse(ev.target.result);
+            if (obj && obj.tree && obj.sites) {
+              setTree(obj.tree); setSites(obj.sites);
+            } else if (obj && obj.id) {
+              setTree(obj);
+            } else {
+              alert("Invalid file.");
+            }
+          } catch (err) { alert("Could not read file."); }
+        };
+        reader.readAsText(f);
+        e.target.value = "";
+      };
+      const handlePrint = () => window.print();
+      const handleShare = async () => {
+        const encoded = encodeStateToHash({ tree, sites });
+        if (!encoded) { setToast("Could not create share link"); return; }
+        const base = location.origin + location.pathname + location.search;
+        const url = base + "#data=" + encoded;
+        try {
+          await navigator.clipboard.writeText(url);
+          history.replaceState(null, "", "#data=" + encoded);
+          setToast("Share link copied to clipboard");
+        } catch (e) {
+          history.replaceState(null, "", "#data=" + encoded);
+          setToast("Link is in the address bar — copy it manually");
+        }
+      };
+      const dismissTip = () => { setShowTip(false); localStorage.setItem(TIP_KEY, "0"); };
+
+      const fileInputRef = useRef(null);
+
+      return (
+        <div className="app" onClick={() => setSelectedId(null)}>
+          <header className="topbar">
+            <div className="brand">
+              <div className="logo">
+                <img src={LOGO_SRC} alt="VWC" />
+              </div>
+              <div>
+                <div className="name">VWC</div>
+                <div className="sub">Verenigde West-Afrikaanse Compagnie</div>
+              </div>
+            </div>
+            <div className="topbar-title">Organigram</div>
+            <div className="topbar-actions">
+              <input ref={fileInputRef} type="file" accept="application/json" onChange={handleImport} style={{display:"none"}} />
+              <button className="btn primary" onClick={handleShare} title="Copy a link that includes the current organigram">Copy share link</button>
+              <button className="btn" onClick={() => fileInputRef.current?.click()}>Import</button>
+              <button className="btn" onClick={handleExport}>Export JSON</button>
+              <button className="btn" onClick={handlePrint}>Print / PDF</button>
+              <button className="btn danger" onClick={handleReset}>Reset</button>
+            </div>
+          </header>
+
+          <main className="canvas" onClick={() => setSelectedId(null)}>
+            <div className="stage">
+              <div className="page-header">
+                <div className="eyebrow">VWC · Mining Operations</div>
+                <h1>Organigram</h1>
+                <div className="rule"></div>
+                <p>Click any text to rename · Drag any card onto another to move it · Click a card and tap chips to set its sites</p>
+              </div>
+
+              <Legend
+                sites={sites}
+                onShortChange={handleSiteShort}
+                onLabelChange={handleSiteLabel}
+              />
+
+              <div className="tree">
+                <ul>
+                  <TreeNode
+                    node={tree}
+                    isRoot={true}
+                    selectedId={selectedId}
+                    sites={sites}
+                    dragId={dragId}
+                    dropTargetId={dropTargetId}
+                    onSelect={setSelectedId}
+                    onChange={handleChange}
+                    onAddChild={handleAddChild}
+                    onAddSibling={handleAddSibling}
+                    onDelete={handleDelete}
+                    onToggleSite={handleToggleSite}
+                    onToggleType={handleToggleType}
+                    onDragStart={onDragStart}
+                    onDragOver={onDragOver}
+                    onDragLeave={onDragLeave}
+                    onDrop={onDrop}
+                    onDragEnd={onDragEnd}
+                  />
+                </ul>
+              </div>
+
+              <div className="footer">VWC · Verenigde West-Afrikaanse Compagnie</div>
+            </div>
+          </main>
+
+          {toast && <div className="toast">{toast}</div>}
+
+          {showTip && (
+            <div className="tip">
+              <span>Click any text to edit · <kbd>Drag</kbd> a card onto another to move it · <kbd>+ Report</kbd> / <kbd>+ Peer</kbd> add branches · <kbd>×</kbd> deletes · Click chips to set sites</span>
+              <span className="x" onClick={dismissTip}>✕</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
