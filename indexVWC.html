@@ -557,9 +557,9 @@
     const LOGO_SRC = document.getElementById('logo-data').textContent.trim();
 
     const DEFAULT_SITES = [
-      { id: "ext1", label: "Intotroso",       short: "INT"  },
-      { id: "ext2", label: "Asuheye",         short: "ASU"  },
-      { id: "proc", label: "Processing Site", short: "PROC" }
+      { id: "ext1", label: "Intotroso", short: "INT" },
+      { id: "ext2", label: "Asuheye",   short: "ASU" },
+      { id: "proc", label: "Akwsiasi",  short: "AKW" }
     ];
     const ALL_SITES = DEFAULT_SITES.map(s => s.id);
 
@@ -573,7 +573,7 @@
           id: "n_op", type: "person", name: "Edward Ankapong", role: "Plant Manager", dept: "op", sites: [...ALL_SITES],
           children: [
             {
-              id: "n_grp_ext1", type: "group", name: "Intotroso", role: "Site",
+              id: "n_grp_ext1", type: "group", name: "Intotroso", role: "Extraction Site",
               dept: "op", sites: ["ext1"],
               children: [
                 { id: "n_e1_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext1"], children: [] },
@@ -582,7 +582,7 @@
               ]
             },
             {
-              id: "n_grp_ext2", type: "group", name: "Asuheye", role: "Site",
+              id: "n_grp_ext2", type: "group", name: "Asuheye", role: "Extraction Site",
               dept: "op", sites: ["ext2"],
               children: [
                 { id: "n_e2_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext2"], children: [] },
@@ -591,7 +591,7 @@
               ]
             },
             {
-              id: "n_grp_proc", type: "group", name: "Processing Site", role: "Site",
+              id: "n_grp_proc", type: "group", name: "Akwsiasi", role: "Processing Site",
               dept: "op", sites: ["proc"],
               children: [
                 { id: "n_p_fm", type: "person", name: "Akwasi Eric", role: "Site Foreman", dept: "op", sites: [...ALL_SITES], children: [] }
@@ -922,7 +922,15 @@
               onClick={() => onSelect(node.id)}
             />
           )}
-          {isGroup && <div className="role">Site</div>}
+          {isGroup && (
+            <Editable
+              className="role"
+              value={node.role}
+              onChange={v => onChange(node.id, { role: v })}
+              placeholder="Site type"
+              onClick={() => onSelect(node.id)}
+            />
+          )}
 
           <Editable
             className="name"
@@ -1089,6 +1097,7 @@
       const renameMap = {
         "Extraction Site 1": "Intotroso",
         "Extraction Site 2": "Asuheye",
+        "Processing Site": "Akwsiasi",
         "Emmanuel Addai": "?"
       };
       const removeNames = new Set(["Osman Mumuni"]);
@@ -1097,7 +1106,14 @@
           .filter(c => !removeNames.has(c.name))
           .map(pruneAndRename);
         const newName = renameMap[node.name] || node.name;
-        return { ...node, name: newName, children: kids };
+        // Promote generic "Site" group role into Extraction / Processing based on assigned sites
+        let newRole = node.role;
+        if (node.type === "group" && (node.role === "Site" || !node.role)) {
+          const sitesArr = node.sites || [];
+          if (sitesArr.includes("proc")) newRole = "Processing Site";
+          else newRole = "Extraction Site";
+        }
+        return { ...node, name: newName, role: newRole, children: kids };
       }
       const tree = state.tree ? pruneAndRename(state.tree) : state.tree;
       const sites = (state.sites || []).map(s => {
@@ -1105,6 +1121,8 @@
           return { ...s, label: "Intotroso", short: (s.short === "EXT-1" ? "INT" : s.short) };
         if (s.id === "ext2" && (s.label === "Extraction Site 2" || !s.label))
           return { ...s, label: "Asuheye", short: (s.short === "EXT-2" ? "ASU" : s.short) };
+        if (s.id === "proc" && (s.label === "Processing Site" || !s.label))
+          return { ...s, label: "Akwsiasi", short: (s.short === "PROC" ? "AKW" : s.short) };
         return s;
       });
       return { tree, sites };
