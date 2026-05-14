@@ -255,8 +255,8 @@
       background: linear-gradient(180deg, #1C2A22 0%, #0E1A14 100%);
       color: var(--cream);
       border-color: rgba(201,166,74,0.4);
-      min-width: 220px; padding: 12px 18px 14px; text-align: center;
-      max-width: 360px;
+      min-width: 240px; padding: 12px 18px 14px; text-align: center;
+      max-width: 380px;
     }
     .node.group .accent { display: none; }
     .node.group .role {
@@ -431,23 +431,21 @@
       padding: 8px;
       background: rgba(0,0,0,0.22);
       border-radius: 5px;
-      display: flex; flex-direction: column; gap: 3px;
+      display: flex; flex-direction: column; gap: 5px;
       text-align: left;
     }
     .node:not(.group) .roster {
       background: rgba(14,26,20,0.06);
     }
     .roster-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      align-items: center;
-      gap: 10px;
-      padding: 5px 8px;
-      border-radius: 3px;
-      background: rgba(244,237,224,0.04);
+      display: block;
+      padding: 9px 34px 10px 11px;
+      border-radius: 4px;
+      background: rgba(244,237,224,0.05);
       position: relative;
       cursor: grab;
       transition: background .15s ease, box-shadow .15s ease, opacity .15s ease;
+      text-align: left;
     }
     .node:not(.group) .roster-row {
       background: rgba(14,26,20,0.04);
@@ -465,30 +463,28 @@
       background: rgba(201,166,74,0.16);
     }
     .roster-row .row-main {
-      display: flex; flex-direction: column; gap: 1px;
-      min-width: 0;
+      display: block;
       text-align: left;
+      min-width: 0;
     }
     .roster-row .row-main > div {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
       max-width: 100%;
-    }
-    .roster-row .row-main > div[contenteditable="true"]:focus {
-      white-space: normal;
-      overflow: visible;
+      word-break: break-word;
     }
     .roster-row .row-role {
-      font-size: 8px; letter-spacing: 0.24em;
+      font-size: 8.5px; letter-spacing: 0.26em;
       text-transform: uppercase; color: var(--gold-2);
-      outline: none; font-weight: 600;
+      outline: none; font-weight: 700;
+      margin: 0 0 2px;
+      display: block;
     }
     .node:not(.group) .roster-row .row-role { color: var(--gold-deep); }
     .roster-row .row-name {
       font-family: var(--serif); font-weight: 600;
-      font-size: 14px; color: var(--cream);
-      outline: none; line-height: 1.15;
+      font-size: 15px; color: var(--cream);
+      outline: none; line-height: 1.18;
+      display: block;
+      margin: 0;
     }
     .node:not(.group) .roster-row .row-name { color: var(--ink); }
     .roster-row .row-name[contenteditable="true"]:focus,
@@ -499,14 +495,17 @@
       padding: 0 3px; margin: 0 -3px;
     }
     .roster-row .site-chips {
-      flex-wrap: nowrap;
-      gap: 3px;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 7px;
     }
     .roster-row .site-chip {
-      font-size: 8px; padding: 1px 5px; letter-spacing: 0.14em;
+      font-size: 8.5px; padding: 2px 6px; letter-spacing: 0.16em;
     }
     .roster-del {
-      width: 20px; height: 20px;
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 22px; height: 22px;
       border-radius: 50%;
       background: transparent;
       color: rgba(244,237,224,0.55);
@@ -514,6 +513,7 @@
       font-size: 14px; line-height: 1;
       cursor: pointer; padding: 0;
       display: inline-flex; align-items: center; justify-content: center;
+      transition: all .12s ease;
     }
     .node:not(.group) .roster-del { color: rgba(14,26,20,0.4); }
     .roster-del:hover {
