@@ -557,9 +557,9 @@
     const LOGO_SRC = document.getElementById('logo-data').textContent.trim();
 
     const DEFAULT_SITES = [
-      { id: "ext1", label: "Extraction Site 1", short: "EXT-1" },
-      { id: "ext2", label: "Extraction Site 2", short: "EXT-2" },
-      { id: "proc", label: "Processing Site",   short: "PROC"  }
+      { id: "ext1", label: "Intotroso",       short: "INT"  },
+      { id: "ext2", label: "Asuheye",         short: "ASU"  },
+      { id: "proc", label: "Processing Site", short: "PROC" }
     ];
     const ALL_SITES = DEFAULT_SITES.map(s => s.id);
 
@@ -573,7 +573,7 @@
           id: "n_op", type: "person", name: "Edward Ankapong", role: "Plant Manager", dept: "op", sites: [...ALL_SITES],
           children: [
             {
-              id: "n_grp_ext1", type: "group", name: "Extraction Site 1", role: "Site",
+              id: "n_grp_ext1", type: "group", name: "Intotroso", role: "Site",
               dept: "op", sites: ["ext1"],
               children: [
                 { id: "n_e1_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext1"], children: [] },
@@ -582,7 +582,7 @@
               ]
             },
             {
-              id: "n_grp_ext2", type: "group", name: "Extraction Site 2", role: "Site",
+              id: "n_grp_ext2", type: "group", name: "Asuheye", role: "Site",
               dept: "op", sites: ["ext2"],
               children: [
                 { id: "n_e2_fm", type: "person", name: "Foreman",  role: "Site Foreman", dept: "op", sites: ["ext2"], children: [] },
@@ -600,9 +600,8 @@
           ]
         },
         {
-          id: "n_sec", type: "person", name: "Emmanuel Addai", role: "Security Director", dept: "sec", sites: [...ALL_SITES],
+          id: "n_sec", type: "person", name: "?", role: "Security Director", dept: "sec", sites: [...ALL_SITES],
           children: [
-            { id: "n_sec_1", type: "person", name: "Osman Mumuni",     role: "Senior Security", dept: "sec", sites: [...ALL_SITES], children: [] },
             { id: "n_sec_2", type: "person", name: "Isaac",             role: "Senior Security", dept: "sec", sites: [...ALL_SITES], children: [] },
             { id: "n_sec_3", type: "person", name: "Alassan Issan Kaa", role: "Security",        dept: "sec", sites: [...ALL_SITES], children: [] },
             { id: "n_sec_4", type: "person", name: "Nana Adu",          role: "Security",        dept: "sec", sites: [...ALL_SITES], children: [] },
@@ -748,6 +747,9 @@
     }
     function Editable({ value, onChange, className, placeholder, onClick }) {
       const ref = useRef(null);
+      // Initialize textContent on mount and whenever value changes externally
+      // (e.g. via Reset / Import). We never write textContent while the user is
+      // typing into this element — that would reset their caret to position 0.
       useEffect(() => {
         if (!ref.current) return;
         if (document.activeElement === ref.current) return;
@@ -771,8 +773,6 @@
           }}
           onMouseDown={e => {
             e.stopPropagation();
-            // First click: focus + select all so the user can immediately overwrite.
-            // Subsequent clicks (while focused) keep default cursor positioning.
             if (document.activeElement !== e.currentTarget) {
               e.preventDefault();
               e.currentTarget.focus();
@@ -781,7 +781,6 @@
           }}
           onClick={e => { e.stopPropagation(); onClick && onClick(); }}
           onFocus={e => {
-            // For focus arriving via Tab key (no preceding mousedown), select all too.
             requestAnimationFrame(() => {
               if (document.activeElement === e.target) {
                 const sel = window.getSelection();
@@ -791,9 +790,7 @@
           }}
           onDragStart={e => { e.preventDefault(); e.stopPropagation(); }}
           data-placeholder={placeholder}
-        >
-          {value}
-        </div>
+        />
       );
     }
 
@@ -1086,16 +1083,43 @@
       );
     }
 
+    /* ---------- One-time migrations for saved data ---------- */
+    function migrateState(state) {
+      if (!state) return state;
+      const renameMap = {
+        "Extraction Site 1": "Intotroso",
+        "Extraction Site 2": "Asuheye",
+        "Emmanuel Addai": "?"
+      };
+      const removeNames = new Set(["Osman Mumuni"]);
+      function pruneAndRename(node) {
+        const kids = (node.children || [])
+          .filter(c => !removeNames.has(c.name))
+          .map(pruneAndRename);
+        const newName = renameMap[node.name] || node.name;
+        return { ...node, name: newName, children: kids };
+      }
+      const tree = state.tree ? pruneAndRename(state.tree) : state.tree;
+      const sites = (state.sites || []).map(s => {
+        if (s.id === "ext1" && (s.label === "Extraction Site 1" || !s.label))
+          return { ...s, label: "Intotroso", short: (s.short === "EXT-1" ? "INT" : s.short) };
+        if (s.id === "ext2" && (s.label === "Extraction Site 2" || !s.label))
+          return { ...s, label: "Asuheye", short: (s.short === "EXT-2" ? "ASU" : s.short) };
+        return s;
+      });
+      return { tree, sites };
+    }
+
     /* ---------- App ---------- */
     function App() {
       // Initial state: URL hash > localStorage > defaults
       const initial = (() => {
         const fromHash = decodeStateFromHash(location.hash);
-        if (fromHash && fromHash.tree && fromHash.sites) return fromHash;
+        if (fromHash && fromHash.tree && fromHash.sites) return migrateState(fromHash);
         try {
           const tree = JSON.parse(localStorage.getItem(STORAGE_KEY_TREE) || "null");
           const sites = JSON.parse(localStorage.getItem(STORAGE_KEY_SITES) || "null");
-          if (tree && sites) return { tree, sites };
+          if (tree && sites) return migrateState({ tree, sites });
         } catch(e) {}
         return { tree: DEFAULT_TREE, sites: DEFAULT_SITES };
       })();
