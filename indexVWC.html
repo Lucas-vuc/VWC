@@ -186,7 +186,7 @@
       border: 1px solid rgba(14,26,20,0.10);
       border-radius: 6px;
       box-shadow: 0 1px 2px rgba(14,26,20,0.04), 0 6px 18px rgba(14,26,20,0.06);
-      text-align: left;
+      text-align: center;
       transition: box-shadow .18s ease, transform .18s ease, border-color .18s ease;
       cursor: grab;
     }
@@ -223,6 +223,12 @@
       text-transform: uppercase; color: var(--gold-deep);
       margin: 0 0 6px; outline: none;
     }
+    .node .pillar-tag {
+      font-size: 9px; letter-spacing: 0.3em; font-weight: 700;
+      text-transform: uppercase; color: var(--gold-deep);
+      margin: 0 0 6px;
+    }
+    .node.root .pillar-tag { color: var(--gold-2); }
     .node .name {
       font-family: var(--serif); font-weight: 600;
       font-size: 18px; color: var(--ink);
@@ -272,6 +278,7 @@
     /* Site chips on cards */
     .site-chips {
       display: flex; gap: 4px; flex-wrap: wrap; margin-top: 8px;
+      justify-content: center;
     }
     .site-chip {
       font-size: 9px; letter-spacing: 0.16em;
@@ -498,6 +505,7 @@
       flex-wrap: wrap;
       gap: 4px;
       margin-top: 7px;
+      justify-content: flex-start;
     }
     .roster-row .site-chip {
       font-size: 8.5px; padding: 2px 6px; letter-spacing: 0.16em;
@@ -537,8 +545,163 @@
     .roster-add:hover { color: var(--cream); border-color: var(--gold-2); background: rgba(201,166,74,0.1); }
     .node:not(.group) .roster-add:hover { color: var(--ink); background: rgba(201,166,74,0.15); }
 
+    /* ---------- Info / details button ---------- */
+    .node-btn.info:hover { background: var(--gold-2); color: var(--ink); }
+    .roster-info {
+      position: absolute;
+      top: 6px; right: 30px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(244,237,224,0.55);
+      border: 1px solid transparent;
+      font-size: 12px; line-height: 1;
+      cursor: pointer; padding: 0;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: all .12s ease;
+    }
+    .node:not(.group) .roster-info { color: rgba(14,26,20,0.4); }
+    .roster-info:hover {
+      background: rgba(201,166,74,0.25);
+      border-color: var(--gold);
+      color: var(--ink);
+    }
+    .node.group .roster-info:hover { color: var(--cream); }
+
+    /* ---------- VUC Pillars band ---------- */
+    .pillars-band { margin: 8px auto 6px; max-width: 1120px; }
+    .pillars-head {
+      text-align: center;
+      font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase;
+      color: var(--gold-deep); margin-bottom: 18px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+    .pillars-head::before, .pillars-head::after {
+      content: ''; height: 1px; width: 64px; background: var(--line);
+    }
+    .pillars-grid {
+      display: flex; justify-content: center; gap: 18px; flex-wrap: wrap;
+    }
+    .pillar-card {
+      position: relative; width: 250px;
+      background: linear-gradient(180deg, #26352F 0%, #18241E 100%);
+      border: 1px solid rgba(201,166,74,0.42);
+      border-radius: 8px;
+      padding: 16px 18px 18px;
+      text-align: center; color: var(--cream);
+      box-shadow: 0 10px 26px rgba(14,26,20,0.16);
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .pillar-card:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(14,26,20,0.24); }
+    .pillar-num {
+      font-size: 10px; letter-spacing: 0.3em; color: var(--gold-2); font-weight: 700;
+    }
+    .pillar-title {
+      font-family: var(--serif); font-size: 18px; font-weight: 600;
+      color: var(--gold-2); margin: 5px 0 12px; line-height: 1.18;
+      letter-spacing: 0.02em; outline: none;
+    }
+    .pillar-owner-role {
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(244,237,224,0.6); margin-bottom: 3px; outline: none;
+    }
+    .pillar-owner {
+      font-family: var(--serif); font-size: 19px; color: var(--cream);
+      font-weight: 600; line-height: 1.15; outline: none;
+    }
+    .pillar-title[contenteditable="true"]:focus,
+    .pillar-owner[contenteditable="true"]:focus,
+    .pillar-owner-role[contenteditable="true"]:focus {
+      background: rgba(201,166,74,0.16);
+      border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(201,166,74,0.5);
+    }
+    .pillar-details {
+      margin-top: 13px;
+      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      font-weight: 600;
+      color: var(--gold-2);
+      border: 1px solid rgba(201,166,74,0.45);
+      background: transparent;
+      border-radius: 999px; padding: 5px 14px;
+      cursor: pointer; transition: all .15s ease;
+    }
+    .pillar-details:hover { background: var(--gold-2); color: var(--ink); border-color: var(--gold-2); }
+    .platform-separator {
+      text-align: center; margin: 26px auto 14px;
+      font-size: 10px; letter-spacing: 0.34em; text-transform: uppercase;
+      color: var(--mute);
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+    }
+    .platform-separator::before, .platform-separator::after {
+      content: ''; height: 1px; flex: 0 0 90px; background: var(--line);
+    }
+
+    /* ---------- Detail modal ---------- */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(14,26,20,0.55);
+      backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      animation: fade .15s ease both;
+    }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: var(--cream);
+      width: min(580px, 100%);
+      max-height: 88vh; overflow-y: auto;
+      border-radius: 10px;
+      border: 1px solid rgba(201,166,74,0.5);
+      box-shadow: 0 30px 80px rgba(14,26,20,0.45);
+      animation: pop .18s ease both;
+    }
+    @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.99); } to { opacity: 1; transform: none; } }
+    .modal-head {
+      background: var(--ink); color: var(--cream);
+      padding: 18px 22px; border-radius: 10px 10px 0 0; position: relative;
+    }
+    .modal-head .m-role {
+      font-size: 10px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-2);
+    }
+    .modal-head .m-name {
+      font-family: var(--serif); font-size: 24px; font-weight: 600; margin-top: 4px;
+    }
+    .modal-close {
+      position: absolute; top: 14px; right: 14px;
+      width: 30px; height: 30px; border-radius: 50%;
+      background: transparent; color: var(--cream);
+      border: 1px solid rgba(201,166,74,0.5);
+      cursor: pointer; font-size: 14px; line-height: 1;
+    }
+    .modal-close:hover { background: var(--gold-2); color: var(--ink); border-color: var(--gold-2); }
+    .modal-body { padding: 20px 22px 8px; display: flex; flex-direction: column; gap: 16px; }
+    .field label {
+      display: block; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--gold-deep); margin-bottom: 6px; font-weight: 700;
+    }
+    .field input, .field textarea {
+      width: 100%; box-sizing: border-box;
+      font-family: var(--sans); font-size: 13.5px; color: var(--ink);
+      background: #fff; border: 1px solid rgba(14,26,20,0.18);
+      border-radius: 6px; padding: 9px 11px; line-height: 1.55;
+      resize: vertical;
+    }
+    .field input:focus, .field textarea:focus {
+      outline: none; border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,166,74,0.22);
+    }
+    .field textarea { min-height: 88px; }
+    .field .hint {
+      font-size: 10px; color: var(--mute); margin-top: 5px; letter-spacing: 0.02em;
+    }
+    .modal-foot {
+      padding: 8px 22px 22px; display: flex; justify-content: flex-end; gap: 8px;
+    }
+    .modal .btn { color: var(--ink); border-color: var(--gold); }
+    .modal .btn:hover { background: rgba(201,166,74,0.14); }
+    .modal .btn.primary { background: var(--gold-2); color: var(--ink); }
+
     @media print {
-      .topbar, .tip, .toast { display: none !important; }
+      .topbar, .tip, .toast, .modal-overlay { display: none !important; }
       .expand-toggle { display: none !important; }
       body { background: #fff; }
       .canvas { overflow: visible; padding: 24px; }
@@ -563,10 +726,45 @@
     ];
     const ALL_SITES = DEFAULT_SITES.map(s => s.id);
 
+    const DEFAULT_PILLARS = [
+      {
+        id: "p01", num: "01",
+        title: "Strategy & Partnerships",
+        owner: "Louis Van Uem", ownerRole: "VUC Managing Director",
+        joined: "",
+        responsibilities: "Government JV Development (MLNR, MIIF, state mining entities)\nMLNR Relationship & MoU — Responsible Mining Demonstration Hub\nInvestor Network Activation\nGoldBod & Revenue Route Strategy\nStrategic Partnerships (refiners, ESG bodies, off-take)\nExternal Representation",
+        tasks: "Initiate government JV scoping conversation (MLNR / MIIF first meeting)\nGovernment JV framework / MoU term sheet in negotiation\nMLNR MoU signed; government JV structure confirmed",
+        notes: "The Face of the Organization. All government meetings, investor presentations, media and institutional engagement are led by the VUC MD."
+      },
+      {
+        id: "p02", num: "02",
+        title: "Technical & Digital",
+        owner: "Yasin Silyanoglu", ownerRole: "VUC Chief Technical Officer",
+        joined: "",
+        responsibilities: "Technical Plant Configuration Lead\nVWC Website — build & launch\nPlant Configuration Audit (alluvial vs hard-rock capability)\nGeological Assessment Management\nRecovery Optimisation Program (target 3–8 pt gain)\nDigital Operations Layer (intake log, production tracker, compliance calendar)\nTechnical Materials for Stakeholders",
+        tasks: "Website scope & brief agreed; design started\nGeologist engaged; geological fieldwork commenced\nVWC website first version live (or in active development)",
+        notes: "Plant · Geology · Website. Coordinates recovery baseline with VWC MD operational data."
+      },
+      {
+        id: "p03", num: "03",
+        title: "Growth & Presentation",
+        owner: "Lucas Muñoz", ownerRole: "VUC Organisation & Development Manager",
+        joined: "",
+        responsibilities: "Pitch Deck — own & maintain (primary author)\nBusiness Plan Development (living document)\nWebsite Content Ownership\nBrand Identity & Marketing Strategy\nESG Narrative & Responsible Gold Positioning\nCommunity Development Documentation",
+        tasks: "Pitch deck first draft complete (shared with VUC MD for review)\nBusiness plan outline and structure agreed; drafting begun\nFull pitch deck & business plan — first investor-ready version complete",
+        notes: "Pitch Deck · Plan · Brand. Integrates strategy (VUC MD), technical data (VUC CTO) and operational numbers (VWC MD) into a single compelling narrative."
+      }
+    ];
+
     const DEFAULT_TREE = {
       id: "n_md", type: "person",
       name: "Emmanuel Boadi", role: "Managing Director",
       dept: "md", sites: [...ALL_SITES],
+      pillarTag: "PILLAR 04",
+      joined: "",
+      responsibilities: "Throughput & Production Data (M-07) — TPH, operating hours, grade, recovery\nFinancial Operating Data (M-08) — revenue run rate, cost/tonne, working capital\nFeedstock, Partner & Resource Management (mercury-free intake)\nLocal Compliance Monitoring (EPA, WRC, processing licence)\nCommunity & Traditional Authority (Ashanti leadership, District Assembly)\nSecurity, Logistics & Reporting",
+      tasks: "Day 14 — M-07 & M-08 delivered (throughput, grade, recovery and revenue baseline confirmed)",
+      notes: "Pillar 04 — Ghana Operations & Data. Oversees Security and Supply Chain (Daniel Agyei); maintains gold custody chain; delivers monthly operational report to VUC.",
       children: [
         { id: "n_pub", type: "person", name: "Nana Yaw Tabiri", role: "Public Relations Director", dept: "pub", sites: [...ALL_SITES], children: [] },
         {
@@ -612,9 +810,10 @@
       ]
     };
 
-    const STORAGE_KEY_TREE  = "vwc_organigram_v5_tree";
-    const STORAGE_KEY_SITES = "vwc_organigram_v5_sites";
-    const TIP_KEY = "vwc_organigram_v5_tip";
+    const STORAGE_KEY_TREE  = "vwc_organigram_v6_tree";
+    const STORAGE_KEY_SITES = "vwc_organigram_v6_sites";
+    const STORAGE_KEY_PILLARS = "vwc_organigram_v7_pillars";
+    const TIP_KEY = "vwc_organigram_v6_tip";
 
     const uid = () => "n_" + Math.random().toString(36).slice(2, 9);
 
@@ -824,7 +1023,7 @@
       const {
         node, selected, sites,
         dragId, dropTargetId,
-        onSelect, onChange, onDelete, onToggleSite,
+        onSelect, onChange, onDelete, onToggleSite, onOpenDetails,
         onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd
       } = props;
       const isDragging = dragId === node.id;
@@ -868,6 +1067,12 @@
             onToggle={(siteId) => onToggleSite(node.id, siteId)}
           />
           <button
+            className="roster-info"
+            title="Open description"
+            onMouseDown={e => e.stopPropagation()}
+            onClick={e => { e.stopPropagation(); onOpenDetails('node', node.id); }}
+          >ⓘ</button>
+          <button
             className="roster-del"
             title="Remove"
             onMouseDown={e => e.stopPropagation()}
@@ -884,7 +1089,7 @@
         dragId, dropTargetId,
         rosterChildren, collapsed, viewMode,
         onSelect, onChange, onAddChild, onAddSibling, onDelete,
-        onToggleSite, onToggleType, onToggleCollapsed, onToggleViewMode,
+        onToggleSite, onToggleType, onToggleCollapsed, onToggleViewMode, onOpenDetails,
         onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd
       } = props;
       const isGroup = node.type === "group";
@@ -912,6 +1117,8 @@
           onDrop={e => onDrop(e, node.id)}
         >
           <span className="accent" />
+
+          {node.pillarTag && <div className="pillar-tag">{node.pillarTag}</div>}
 
           {!isGroup && (
             <Editable
@@ -961,6 +1168,7 @@
                   onChange={onChange}
                   onDelete={onDelete}
                   onToggleSite={onToggleSite}
+                  onOpenDetails={onOpenDetails}
                   onDragStart={onDragStart}
                   onDragOver={onDragOver}
                   onDragLeave={onDragLeave}
@@ -976,6 +1184,11 @@
           )}
 
           <div className="actions">
+            <button
+              className="node-btn info"
+              title="Open description"
+              onClick={e => { e.stopPropagation(); onOpenDetails('node', node.id); }}
+            >ⓘ</button>
             {hasChildren && (
               <button
                 className="node-btn view"
@@ -1091,6 +1304,92 @@
       );
     }
 
+    /* ---------- VUC Pillars band ---------- */
+    function PillarsBand({ pillars, onChange, onOpenDetails }) {
+      return (
+        <div className="pillars-band">
+          <div className="pillars-head">VUC · Workstream Pillars</div>
+          <div className="pillars-grid">
+            {pillars.map(p => (
+              <div className="pillar-card" key={p.id}>
+                <div className="pillar-num">PILLAR {p.num}</div>
+                <Editable
+                  className="pillar-title"
+                  value={p.title}
+                  onChange={v => onChange(p.id, { title: v })}
+                  placeholder="Pillar"
+                />
+                <Editable
+                  className="pillar-owner-role"
+                  value={p.ownerRole}
+                  onChange={v => onChange(p.id, { ownerRole: v })}
+                  placeholder="Position"
+                />
+                <Editable
+                  className="pillar-owner"
+                  value={p.owner}
+                  onChange={v => onChange(p.id, { owner: v })}
+                  placeholder="Owner name"
+                />
+                <div>
+                  <button
+                    className="pillar-details"
+                    onClick={() => onOpenDetails('pillar', p.id)}
+                  >View description</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    /* ---------- Detail modal ---------- */
+    function DetailModal({ entry, onChange, onClose }) {
+      useEffect(() => {
+        const h = (e) => { if (e.key === "Escape") onClose(); };
+        window.addEventListener("keydown", h);
+        return () => window.removeEventListener("keydown", h);
+      }, [onClose]);
+      if (!entry) return null;
+      const set = (k) => (e) => onChange({ [k]: e.target.value });
+      const role = entry.ownerRole || entry.role || "";
+      const name = entry.owner || entry.name || "";
+      return (
+        <div className="modal-overlay" onMouseDown={onClose}>
+          <div className="modal" onMouseDown={e => e.stopPropagation()}>
+            <div className="modal-head">
+              <div className="m-role">{role}</div>
+              <div className="m-name">{name || "—"}</div>
+              <button className="modal-close" title="Close" onClick={onClose}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="field">
+                <label>Date joined the company</label>
+                <input type="text" value={entry.joined || ""} onChange={set("joined")} placeholder="e.g. January 2026" />
+              </div>
+              <div className="field">
+                <label>Responsibilities</label>
+                <textarea value={entry.responsibilities || ""} onChange={set("responsibilities")} placeholder="One responsibility per line…" />
+                <div className="hint">Tip: write one item per line.</div>
+              </div>
+              <div className="field">
+                <label>Tasks</label>
+                <textarea value={entry.tasks || ""} onChange={set("tasks")} placeholder="One task per line…" />
+              </div>
+              <div className="field">
+                <label>Notes</label>
+                <textarea value={entry.notes || ""} onChange={set("notes")} placeholder="Any additional context…" />
+              </div>
+            </div>
+            <div className="modal-foot">
+              <button className="btn primary" onClick={onClose}>Done</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     /* ---------- One-time migrations for saved data ---------- */
     function migrateState(state) {
       if (!state) return state;
@@ -1113,7 +1412,9 @@
           if (sitesArr.includes("proc")) newRole = "Processing Site";
           else newRole = "Extraction Site";
         }
-        return { ...node, name: newName, role: newRole, children: kids };
+        const extra = {};
+        if (node.dept === "md" && !node.pillarTag) extra.pillarTag = "PILLAR 04";
+        return { ...node, name: newName, role: newRole, ...extra, children: kids };
       }
       const tree = state.tree ? pruneAndRename(state.tree) : state.tree;
       const sites = (state.sites || []).map(s => {
@@ -1125,7 +1426,8 @@
           return { ...s, label: "Akwsiasi", short: (s.short === "PROC" ? "AKW" : s.short) };
         return s;
       });
-      return { tree, sites };
+      const pillars = (state.pillars && state.pillars.length) ? state.pillars : DEFAULT_PILLARS;
+      return { tree, sites, pillars };
     }
 
     /* ---------- App ---------- */
@@ -1137,14 +1439,17 @@
         try {
           const tree = JSON.parse(localStorage.getItem(STORAGE_KEY_TREE) || "null");
           const sites = JSON.parse(localStorage.getItem(STORAGE_KEY_SITES) || "null");
-          if (tree && sites) return migrateState({ tree, sites });
+          const pillars = JSON.parse(localStorage.getItem(STORAGE_KEY_PILLARS) || "null");
+          if (tree && sites) return migrateState({ tree, sites, pillars });
         } catch(e) {}
-        return { tree: DEFAULT_TREE, sites: DEFAULT_SITES };
+        return { tree: DEFAULT_TREE, sites: DEFAULT_SITES, pillars: DEFAULT_PILLARS };
       })();
 
       const [tree, setTree] = useState(initial.tree);
       const [sites, setSites] = useState(initial.sites);
+      const [pillars, setPillars] = useState(initial.pillars);
       const [selectedId, setSelectedId] = useState(null);
+      const [detail, setDetail] = useState(null);
       const [showTip, setShowTip] = useState(() => localStorage.getItem(TIP_KEY) !== "0");
       const [dragId, setDragId] = useState(null);
       const [dropTargetId, setDropTargetId] = useState(null);
@@ -1152,6 +1457,7 @@
 
       useEffect(() => { try { localStorage.setItem(STORAGE_KEY_TREE, JSON.stringify(tree)); } catch(e) {} }, [tree]);
       useEffect(() => { try { localStorage.setItem(STORAGE_KEY_SITES, JSON.stringify(sites)); } catch(e) {} }, [sites]);
+      useEffect(() => { try { localStorage.setItem(STORAGE_KEY_PILLARS, JSON.stringify(pillars)); } catch(e) {} }, [pillars]);
 
       // Toast lifecycle
       useEffect(() => {
@@ -1192,6 +1498,20 @@
 
       const handleSiteShort = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, short: val } : s));
       const handleSiteLabel = (id, val) => setSites(ss => ss.map(s => s.id === id ? { ...s, label: val } : s));
+      const handlePillarChange = useCallback((id, patch) => setPillars(ps => ps.map(p => p.id === id ? { ...p, ...patch } : p)), []);
+      const openDetails = useCallback((kind, id) => setDetail({ kind, id }), []);
+      const closeDetails = useCallback(() => setDetail(null), []);
+      const detailEntry = detail
+        ? (detail.kind === "pillar" ? pillars.find(p => p.id === detail.id) : findNode(tree, detail.id))
+        : null;
+      const detailChange = useCallback((patch) => {
+        setDetail(d => {
+          if (!d) return d;
+          if (d.kind === "pillar") setPillars(ps => ps.map(p => p.id === d.id ? { ...p, ...patch } : p));
+          else setTree(t => updateNode(t, d.id, patch));
+          return d;
+        });
+      }, []);
 
       // Drag and drop reparenting
       const onDragStart = (e, id) => {
@@ -1231,10 +1551,11 @@
         if (!window.confirm("Reset to the default organigram? Your changes will be lost.")) return;
         setTree(DEFAULT_TREE);
         setSites(DEFAULT_SITES);
+        setPillars(DEFAULT_PILLARS);
         setSelectedId(null);
       };
       const handleExport = () => {
-        const payload = { tree, sites };
+        const payload = { tree, sites, pillars };
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -1251,6 +1572,7 @@
             const obj = JSON.parse(ev.target.result);
             if (obj && obj.tree && obj.sites) {
               setTree(obj.tree); setSites(obj.sites);
+              if (obj.pillars && obj.pillars.length) setPillars(obj.pillars);
             } else if (obj && obj.id) {
               setTree(obj);
             } else {
@@ -1263,7 +1585,7 @@
       };
       const handlePrint = () => window.print();
       const handleShare = async () => {
-        const encoded = encodeStateToHash({ tree, sites });
+        const encoded = encodeStateToHash({ tree, sites, pillars });
         if (!encoded) { setToast("Could not create share link"); return; }
         const base = location.origin + location.pathname + location.search;
         const url = base + "#data=" + encoded;
@@ -1311,7 +1633,7 @@
                 <div className="eyebrow">VWC · Mining Operations</div>
                 <h1>Organigram</h1>
                 <div className="rule"></div>
-                <p>Click any text to rename (it auto-selects so you can overwrite) · Drag any card onto another to move it · Click a card and tap chips to set its sites · Use <strong>≡</strong> on a card to switch between tree and compact list view</p>
+                <p>Click any text to rename (it auto-selects so you can overwrite) · Click <strong>ⓘ</strong> on any card to open its editable description (responsibilities, tasks, date joined) · Drag any card to move it · <strong>≡</strong> toggles compact list view</p>
               </div>
 
               <Legend
@@ -1319,6 +1641,14 @@
                 onShortChange={handleSiteShort}
                 onLabelChange={handleSiteLabel}
               />
+
+              <PillarsBand
+                pillars={pillars}
+                onChange={handlePillarChange}
+                onOpenDetails={openDetails}
+              />
+
+              <div className="platform-separator">VWC · Ghana Operations</div>
 
               <div className="tree">
                 <ul>
@@ -1338,6 +1668,7 @@
                     onToggleType={handleToggleType}
                     onToggleCollapsed={handleToggleCollapsed}
                     onToggleViewMode={handleToggleViewMode}
+                    onOpenDetails={openDetails}
                     onDragStart={onDragStart}
                     onDragOver={onDragOver}
                     onDragLeave={onDragLeave}
@@ -1353,9 +1684,11 @@
 
           {toast && <div className="toast">{toast}</div>}
 
+          <DetailModal entry={detailEntry} onChange={detailChange} onClose={closeDetails} />
+
           {showTip && (
             <div className="tip">
-              <span>Click text to edit (auto-selects all) · <kbd>Drag</kbd> any card to move it · <kbd>≡</kbd> toggles compact list view · <kbd>▾</kbd> collapses subordinates · Click site chips to assign</span>
+              <span>Click text to edit · <kbd>ⓘ</kbd> opens an editable description · <kbd>Drag</kbd> any card to move it · <kbd>≡</kbd> compact list · <kbd>▾</kbd> collapse · Click chips to assign sites</span>
               <span className="x" onClick={dismissTip}>✕</span>
             </div>
           )}
